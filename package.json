@@ -1,0 +1,14 @@
+{
+  "name": "kaiotu-portfolio",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "optimize": "node scripts/optimize.mjs",
+    "roblox": "node scripts/roblox.mjs",
+    "build": "node scripts/optimize.mjs && node scripts/roblox.mjs --soft && node scripts/build.mjs",
+    "dev": "npm run build && npx --yes serve dist"
+  },
+  "devDependencies": {
+    "sharp": "^0.34.0"
+  }
+}

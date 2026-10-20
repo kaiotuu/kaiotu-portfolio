@@ -1,0 +1,89 @@
+{
+  "updated": 1792299600000,
+  "items": [
+    {
+      "id": "1390601379",
+      "resolved": true,
+      "universeId": "1390601379",
+      "placeId": "4282985734",
+      "name": "Combat Warriors",
+      "visits": 1451877075,
+      "thumb": "https://tr.rbxcdn.com/180DAY-a631d6d73730a77f93b02eb3b0e8b06c/768/432/Image/Webp/noFilter",
+      "thumbKind": "cover",
+      "url": "https://www.roblox.com/games/4282985734",
+      "seed": "read from the Roblox public API on 2026-10-18; replaced automatically by npm run build"
+    },
+    {
+      "id": "7008097940",
+      "resolved": true,
+      "universeId": "7008097940",
+      "placeId": "99567941238278",
+      "name": "[🥇] Ink Game",
+      "visits": 3338943016,
+      "thumb": "https://tr.rbxcdn.com/180DAY-0f04b2f7445544084b4155fd482495ec/768/432/Image/Webp/noFilter",
+      "thumbKind": "cover",
+      "url": "https://www.roblox.com/games/99567941238278",
+      "seed": "read from the Roblox public API on 2026-10-18; replaced automatically by npm run build"
+    },
+    {
+      "id": "7872170209",
+      "resolved": true,
+      "universeId": "7872170209",
+      "placeId": "110483372589393",
+      "name": "[UPDATE 3] Anime Celestial X",
+      "visits": 8201683,
+      "thumb": "https://tr.rbxcdn.com/180DAY-4cae8a92120164b2e6abd870ed9e75eb/768/432/Image/Webp/noFilter",
+      "thumbKind": "cover",
+      "url": "https://www.roblox.com/games/110483372589393",
+      "seed": "read from the Roblox public API on 2026-10-18; replaced automatically by npm run build"
+    },
+    {
+      "id": "9330098759",
+      "resolved": true,
+      "universeId": "9330098759",
+      "placeId": "93914065085396",
+      "name": "Anime Steal",
+      "visits": 145894,
+      "thumb": "https://tr.rbxcdn.com/180DAY-1645f5e1fa54600afe8189e9bc40f0df/768/432/Image/Webp/noFilter",
+      "thumbKind": "cover",
+      "url": "https://www.roblox.com/games/93914065085396",
+      "seed": "read from the Roblox public API on 2026-10-18; replaced automatically by npm run build"
+    },
+    {
+      "id": "9560039807",
+      "resolved": true,
+      "universeId": "9560039807",
+      "placeId": "70796688098439",
+      "name": "Anime Travellers",
+      "visits": 723,
+      "thumb": "https://tr.rbxcdn.com/180DAY-6ffb8b87da6e783e4206a1575d456a09/768/432/Image/Webp/noFilter",
+      "thumbKind": "cover",
+      "url": "https://www.roblox.com/games/70796688098439",
+      "seed": "read from the Roblox public API on 2026-10-18; replaced automatically by npm run build"
+    },
+    {
+      "id": "9496887785",
+      "resolved": true,
+      "universeId": "9496887785",
+      "placeId": "101076813828611",
+      "name": "Shoot or Die",
+      "visits": 56926014,
+      "thumb": "https://tr.rbxcdn.com/180DAY-8ee6de70eb0d8a8489b89171661e6ec5/768/432/Image/Webp/noFilter",
+      "thumbKind": "cover",
+      "url": "https://www.roblox.com/games/101076813828611",
+      "seed": "read from the Roblox public API on 2026-10-18; replaced automatically by npm run build"
+    },
+    {
+      "id": "9647950637",
+      "resolved": true,
+      "universeId": "9647950637",
+      "placeId": "96834383627660",
+      "name": "[🎮Beta] Vingadores de Anime",
+      "visits": 108542,
+      "thumb": "https://tr.rbxcdn.com/180DAY-e2d3581143e0a18addb16d2cf32cff2e/768/432/Image/Webp/noFilter",
+      "thumbKind": "cover",
+      "url": "https://www.roblox.com/games/96834383627660",
+      "seed": "read from the Roblox public API on 2026-10-18; replaced automatically by npm run build"
+    }
+  ]
+}

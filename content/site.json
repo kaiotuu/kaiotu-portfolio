@@ -1,0 +1,57 @@
+{
+  "name": "kaiotu",
+  "role": "3D Artist & Game Developer",
+  "title": "kaiotu — 3D Artist & Game Developer",
+  "description": "Portfolio of kaiotu, a 3D artist working across realistic, stylized, low-poly, hand-painted and anime-inspired styles: modeling, texturing and digital assets.",
+  "url": "",
+  "tagline": "3D Artist & Game Developer",
+  "intro": "Creating 3D models, textures, and digital assets across a variety of styles, techniques, and visual directions.",
+  "styles": [
+    "Realistic",
+    "Stylized",
+    "Low-poly",
+    "Hand-painted",
+    "Anime-inspired",
+    "and more"
+  ],
+  "photo": "portrait.png",
+  "photoAlt": "kaiotu wearing a Roblox São Paulo attendee badge",
+  "about": [
+    "I'm kaiotu, a 3D artist working across a range of styles, techniques and creative directions. My work spans 3D modeling, texturing, hand-painted assets and other parts of the asset creation process.",
+    "I've contributed to more than 10 projects, adapting my work to the needs and visual direction of each one. I like moving between realistic, stylized and anime-inspired work, and I care about the details that make each piece distinctive.",
+    "Every project is a chance to learn a new technique and make something that fits the look it was made for."
+  ],
+  "skills": [
+    "3D Modeling",
+    "Texture Artist",
+    "Texture Designer",
+    "Lead Artist",
+    "Graphic Designer",
+    "Rigger"
+  ],
+  "events": [
+    {
+      "name": "RCS 2026",
+      "year": "2026",
+      "status": "Attendee"
+    },
+    {
+      "name": "Inspire Cafe 2026",
+      "year": "2026",
+      "status": "Attendee"
+    }
+  ],
+  "closing": "Have a project in mind? Let's connect.",
+  "contact": {
+    "x": {
+      "handle": "@kaiotu_",
+      "url": "https://x.com/kaiotu_"
+    },
+    "discord": {
+      "handle": "@kaiotu_oficial",
+      "url": "https://discord.com/users/481161354414260245",
+      "appUrl": "discord://-/users/481161354414260245"
+    },
+    "email": "kaiotu4@gmail.com"
+  }
+}

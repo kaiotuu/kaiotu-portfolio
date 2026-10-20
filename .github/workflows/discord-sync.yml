@@ -1,0 +1,25 @@
+# Publishes new Discord posts to the site. Needs three repository secrets (Settings > Secrets > Actions):
+#   DISCORD_BOT_TOKEN, DISCORD_CHANNEL_ID, DISCORD_ALLOWED_AUTHOR_IDS
+# Without them the job exits quietly. A change to content/ or source-images/ triggers your normal Pages deploy.
+name: discord-sync
+on:
+  schedule: [{ cron: '*/15 * * * *' }]
+  workflow_dispatch:
+permissions: { contents: write }
+concurrency: discord-sync
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node scripts/discord-sync.mjs
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_CHANNEL_ID: ${{ secrets.DISCORD_CHANNEL_ID }}
+          DISCORD_ALLOWED_AUTHOR_IDS: ${{ secrets.DISCORD_ALLOWED_AUTHOR_IDS }}
+      - run: |
+          git config user.name "portfolio-bot"; git config user.email "portfolio-bot@users.noreply.github.com"
+          git add content/discord-posts.json source-images/discord
+          git diff --cached --quiet || (git commit -m "Publish new Discord creations" && git push)

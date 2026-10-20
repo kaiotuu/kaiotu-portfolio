@@ -1,0 +1,136 @@
+{
+  "categories": [
+    {
+      "id": "clothes",
+      "name": "3D Clothes"
+    },
+    {
+      "id": "weapons",
+      "name": "Firearms & Melee Weapons"
+    },
+    {
+      "id": "vehicles",
+      "name": "Cars & Vehicles"
+    },
+    {
+      "id": "assets",
+      "name": "Game Assets"
+    }
+  ],
+  "previewCount": 3,
+  "recentLimit": 12,
+  "items": [
+    {
+      "title": "Springfield Armory",
+      "category": "weapons",
+      "images": [
+        "weapons/01-springfield-armory.jpg"
+      ]
+    },
+    {
+      "title": "P90",
+      "category": "weapons",
+      "images": [
+        "weapons/02-p90.png"
+      ]
+    },
+    {
+      "title": "AK47 PINK",
+      "category": "weapons",
+      "images": [
+        "weapons/03-ak47-pink.png"
+      ]
+    },
+    {
+      "title": "AWP",
+      "category": "weapons",
+      "images": [
+        "weapons/04-awp.webp"
+      ]
+    },
+    {
+      "title": "R35",
+      "category": "vehicles",
+      "images": [
+        "vehicles/01-r35.png"
+      ]
+    },
+    {
+      "title": "Black Hawk",
+      "category": "vehicles",
+      "images": [
+        "vehicles/02-black-hawk.png"
+      ]
+    },
+    {
+      "title": "Generator",
+      "category": "assets",
+      "images": [
+        "assets/01-portable-generator.webp"
+      ]
+    },
+    {
+      "title": "Wano Assets",
+      "category": "assets",
+      "images": [
+        "assets/02-pagoda-buildings.webp"
+      ]
+    },
+    {
+      "title": "Stone Bridge",
+      "category": "assets",
+      "images": [
+        "assets/03-stone-bridge.webp"
+      ]
+    },
+    {
+      "title": "IGRIS",
+      "category": "clothes",
+      "images": [
+        "clothes/01-igris.jpg"
+      ]
+    },
+    {
+      "title": "Madara",
+      "category": "clothes",
+      "images": [
+        "clothes/02-madara.png"
+      ]
+    },
+    {
+      "title": "Clown",
+      "category": "clothes",
+      "images": [
+        "clothes/03-clown.png"
+      ]
+    },
+    {
+      "title": "Secret Agent",
+      "category": "clothes",
+      "images": [
+        "clothes/04-secret-agent.png"
+      ]
+    },
+    {
+      "title": "Aizen",
+      "category": "clothes",
+      "images": [
+        "clothes/05-aizen.png"
+      ]
+    },
+    {
+      "title": "GUTS",
+      "category": "clothes",
+      "images": [
+        "clothes/06-guts.jpg"
+      ]
+    },
+    {
+      "title": "Konoha Assets",
+      "category": "assets",
+      "images": [
+        "assets/04-round-hut-compound.webp"
+      ]
+    }
+  ]
+}
