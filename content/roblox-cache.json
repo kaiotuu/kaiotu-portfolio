@@ -84,6 +84,18 @@
       "thumbKind": "cover",
       "url": "https://www.roblox.com/games/96834383627660",
       "seed": "read from the Roblox public API on 2026-10-18; replaced automatically by npm run build"
+    },
+    {
+      "id": "10289650937",
+      "resolved": true,
+      "universeId": "10289650937",
+      "placeId": "134039915751463",
+      "name": "🔥 Anime Piece - Release",
+      "visits": 7041,
+      "thumb": "https://tr.rbxcdn.com/180DAY-db3996104e6abbf89ecfbc5b0bed5b4a/768/432/Image/Webp/noFilter",
+      "thumbKind": "cover",
+      "url": "https://www.roblox.com/games/134039915751463",
+      "seed": "read from the Roblox public API on 2026-10-20; replaced automatically by npm run build"
     }
   ]
 }
