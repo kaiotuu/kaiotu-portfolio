@@ -123,6 +123,7 @@ h2 .g{color:var(--mute)}
 .strip{overflow-x:auto;scrollbar-width:none;margin-inline:calc(var(--gut)*-1);padding-inline:var(--gut)}
 .strip::-webkit-scrollbar{display:none}
 .strip{cursor:grab}.strip.drag{cursor:grabbing;user-select:none}.strip.drag .thumb{pointer-events:none}
+.strip .cap{flex-direction:column;gap:2px;justify-content:flex-start}
 .strip .cap time{letter-spacing:.02em;font-size:13px}
 .strip ul{display:flex;gap:16px;width:max-content}
 .strip li{width:200px;flex:none}

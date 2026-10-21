@@ -126,9 +126,9 @@ vimg.addEventListener('load',paint1);
 
 /* recent work: relative ages ("2H", "3 DAYS", "1 MONTH"), refreshed every minute */
 const ago=(t,p)=>{const s=Math.max(0,(Date.now()-t)/1e3),m=s/60,h=m/60,d=h/24,mo=d/30.44,y=d/365.25,n=(v,u)=>{v=Math.floor(v);return v+' '+u+(v>1?'S':'')};
-  if(p==='month')return mo<1?'THIS MONTH':y>=1?n(y,'YEAR'):n(mo,'MONTH');
+  if(p==='month')return mo<1?'THIS MONTH':(y>=1?n(y,'YEAR'):n(mo,'MONTH'))+' AGO';
   if(p==='day'&&d<1)return 'TODAY';
-  if(m<1)return 'NOW';if(m<60)return Math.floor(m)+' MIN';if(h<24)return Math.floor(h)+'H';if(d<7)return n(d,'DAY');if(d<30.44)return n(d/7,'WEEK');if(y>=1)return n(y,'YEAR');return n(mo,'MONTH')};
+  if(m<1)return 'JUST NOW';if(m<60)return Math.floor(m)+' MIN AGO';if(h<24)return Math.floor(h)+'H AGO';if(d<7)return n(d,'DAY')+' AGO';if(d<30.44)return n(d/7,'WEEK')+' AGO';if(y>=1)return n(y,'YEAR')+' AGO';return n(mo,'MONTH')+' AGO'};
 const tick1=()=>$$('time.rel').forEach(e=>{e.textContent=ago(+e.dataset.t,e.dataset.p)});
 tick1();setInterval(tick1,6e4);
 
