@@ -52,7 +52,7 @@ const autoItems = Object.keys(manifest).sort().filter((k) => works.categories.so
   .map((k) => ({ title: prettify(k.split('/').pop()), category: k.split('/')[0], images: [k], auto: true }));
 /* Recent Work from a folder: drop images in source-images/recent/. Name them "2026-10-20-title.png" (date first) or
    "2026-10-20-1430-title.png" (with time). Without a date in the name, the file's own modified time is used. */
-const recentFolder = Object.keys(manifest).sort().filter((k) => k.startsWith('recent/')).map((k) => {
+const recentFolder = Object.keys(manifest).sort().filter((k) => k.startsWith('recent/') && !usedImgs.has(k)).map((k) => {
   const f = k.split('/').pop();
   const m = f.match(/^(\d{4}-\d{2}-\d{2})(?:[-_T](\d{2})(\d{2}))?[-_ ]?(.*)$/);
   let date;
