@@ -227,7 +227,7 @@ ${recentHtml}
 <dialog id="viewer" aria-label="Image viewer"><div class="v">
 <div class="v-top"><span id="v-count" class="v-count"></span><button type="button" class="round" id="v-close" aria-label="Close viewer">${ico('<path d="M5 5l14 14M19 5L5 19"/>')}</button></div>
 <div class="v-stage" id="v-stage"><img id="v-img" alt="" draggable="false"><button type="button" class="vnav l" id="v-prev" aria-label="Previous image">${ico('<path d="M15 5l-7 7 7 7"/>').replace('width="20" height="20"', 'width="26" height="26"').replace('stroke-width="1.8"', 'stroke-width="2.2"')}</button><button type="button" class="vnav r" id="v-next" aria-label="Next image">${ico('<path d="M9 5l7 7-7 7"/>').replace('width="20" height="20"', 'width="26" height="26"').replace('stroke-width="1.8"', 'stroke-width="2.2"')}</button></div>
-<div class="v-bot"><p class="v-meta" id="v-meta"></p><p class="v-hint">Click the image to zoom \u00b7 drag to move</p></div>
+<div class="v-bot"><p class="v-meta" id="v-meta"></p><p class="v-hint">Tap or pinch to zoom \u00b7 drag to move</p></div>
 </div></dialog>
 <script type="application/json" id="data">${JSON.stringify(ld).replace(/</g, '\\u003c')}</script>
 <script>${js}</script>

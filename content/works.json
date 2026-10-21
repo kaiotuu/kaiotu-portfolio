@@ -147,6 +147,30 @@
       ],
       "recent": true,
       "date": "2026-10-20T21:04:00-03:00"
+    },
+    {
+      "title": "Konoha Wood",
+      "images": [
+        "recent/2026-10-20-2117-konoha-wood.png"
+      ],
+      "recent": true,
+      "date": "2026-10-20T21:17:00-03:00"
+    },
+    {
+      "title": "Chess Floor",
+      "images": [
+        "recent/2026-10-20-2116-chess-floor.png"
+      ],
+      "recent": true,
+      "date": "2026-10-20T21:16:00-03:00"
+    },
+    {
+      "title": "Swords",
+      "images": [
+        "recent/2026-10-20-2115-swords.png"
+      ],
+      "recent": true,
+      "date": "2026-10-20T21:15:00-03:00"
     }
   ]
 }

@@ -74,19 +74,23 @@ render();
 
 /* viewer: full-size images are only created when a piece is opened */
 const dlg=$('#viewer'),vimg=$('#v-img'),vcount=$('#v-count'),vmeta=$('#v-meta'),prev=$('#v-prev'),next=$('#v-next');
-let cur=null,idx=0,opener=null;
-const show=()=>{resetZoom();const w=cur.imgs[idx];vimg.src=w.src;vimg.alt=w.alt||cur.t||'3D artwork by kaiotu';
+let seq=[],pos=0,opener=null;
+const show=()=>{resetZoom();const{it,k}=seq[pos],w=it.imgs[k];vimg.src=w.src;vimg.alt=w.alt||it.t||'3D artwork by kaiotu';
   if(w.w)vimg.width=w.w,vimg.height=w.h;
-  const many=cur.imgs.length>1;prev.hidden=next.hidden=!many;vcount.textContent=many?`${idx+1} / ${cur.imgs.length}`:'';
+  const many=seq.length>1;prev.hidden=next.hidden=!many;vcount.textContent=many?`${pos+1} / ${seq.length}`:'';
   vmeta.textContent='';
-  if(cur.t){const b=document.createElement('b');b.textContent=cur.t;vmeta.append(b)}
-  const rest=[cur.d,cur.s,cur.dt].filter(Boolean).join(' · ');
-  if(rest)vmeta.append((cur.t?' — ':'')+rest);
-  if(many)new Image().src=cur.imgs[(idx+1)%cur.imgs.length].src};
-const go=d=>{idx=(idx+d+cur.imgs.length)%cur.imgs.length;show()};
-$$('.thumb[data-i]').forEach(b=>b.onclick=()=>{cur=data.items[+b.dataset.i];idx=0;opener=b;show();dlg.showModal();dlg.focus()});
+  if(it.t){const b=document.createElement('b');b.textContent=it.t;vmeta.append(b)}
+  const rest=[it.d,it.s,it.dt].filter(Boolean).join(' · ');
+  if(rest)vmeta.append((it.t?' — ':'')+rest);
+  if(many){const n=seq[(pos+1)%seq.length];new Image().src=n.it.imgs[n.k].src}};
+const go=d=>{pos=(pos+d+seq.length)%seq.length;show()};
+/* arrows and swipes move through the pieces of the section that was opened (a category, or Recent Work) */
+$$('.thumb[data-i]').forEach(b=>b.onclick=()=>{
+  const root=b.closest('.cat')||b.closest('#recent')||document,ids=[...new Set($$('.thumb[data-i]',root).map(x=>+x.dataset.i))];
+  seq=[];ids.forEach(i=>data.items[i].imgs.forEach((_,k)=>seq.push({it:data.items[i],k})));
+  const me=data.items[+b.dataset.i];pos=Math.max(0,seq.findIndex(s=>s.it===me&&s.k===0));opener=b;show();dlg.showModal();dlg.focus()});
 prev.onclick=()=>go(-1);next.onclick=()=>go(1);$('#v-close').onclick=()=>dlg.close();
-dlg.addEventListener('keydown',e=>{if(cur.imgs.length>1){if(e.key==='ArrowLeft')go(-1);if(e.key==='ArrowRight')go(1)}});
+dlg.addEventListener('keydown',e=>{if(seq.length>1){if(e.key==='ArrowLeft')go(-1);if(e.key==='ArrowRight')go(1)}});
 dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
 dlg.addEventListener('close',()=>{resetZoom();vimg.removeAttribute('src');opener&&opener.focus()});
 /* zoom: click/tap the image to zoom in at that spot, click again to zoom out; drag to move when zoomed;
@@ -98,16 +102,25 @@ const clampT=()=>{const w=vimg.offsetWidth*S,h=vimg.offsetHeight*S,sr=stage.getB
 const paint1=()=>{clampT();vimg.style.transform=S===1?'':`translate(${TX}px,${TY}px) scale(${S})`;stage.classList.toggle('zoomed',S>1)};
 const zoomTo=(s,cx,cy)=>{const r=stage.getBoundingClientRect(),px=cx-(r.left+r.width/2),py=cy-(r.top+r.height/2);
   TX=px-(px-TX)*(s/S);TY=py-(py-TY)*(s/S);S=s;if(S===1){TX=TY=0}paint1()};
-const resetZoom=()=>{S=1;TX=TY=0;pan=sw=null;vimg.style.transform='';stage.classList.remove('zoomed','panning')};
-stage.addEventListener('pointerdown',e=>{if(e.target.closest('.vnav')||e.button)return;stage.setPointerCapture(e.pointerId);
+const resetZoom=()=>{S=1;TX=TY=0;pan=sw=pinch=null;pts.clear();vimg.style.transform='';stage.classList.remove('zoomed','panning','pinching')};
+const pts=new Map();let pinch=null,noTap=false;
+const dist=()=>{const [a,b]=[...pts.values()];return Math.hypot(a.x-b.x,a.y-b.y)||1},mid=()=>{const [a,b]=[...pts.values()];return{x:(a.x+b.x)/2,y:(a.y+b.y)/2}};
+stage.addEventListener('pointerdown',e=>{if(e.target.closest('.vnav')||e.button)return;stage.setPointerCapture(e.pointerId);pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pts.size===2){pan=sw=null;noTap=true;pinch={d:dist(),s:S,m:mid()};stage.classList.add('pinching');stage.classList.remove('panning');return}
+  if(pts.size>2)return;noTap=false;
   if(S>1){pan={x:e.clientX,y:e.clientY,tx:TX,ty:TY};stage.classList.add('panning')}else sw={x:e.clientX,y:e.clientY,t:e.timeStamp}});
-stage.addEventListener('pointermove',e=>{if(pan){TX=pan.tx+e.clientX-pan.x;TY=pan.ty+e.clientY-pan.y;paint1()}});
+stage.addEventListener('pointermove',e=>{if(pts.has(e.pointerId))pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&pts.size>=2){const m=mid(),ns=Math.min(6,Math.max(1,pinch.s*dist()/pinch.d));zoomTo(ns,m.x,m.y);TX+=m.x-pinch.m.x;TY+=m.y-pinch.m.y;pinch.m=m;paint1();return}
+  if(pan){TX=pan.tx+e.clientX-pan.x;TY=pan.ty+e.clientY-pan.y;paint1()}});
 const up=e=>{
+  const wasPinch=!!pinch;pts.delete(e.pointerId);
+  if(wasPinch){if(pts.size<2){pinch=null;stage.classList.remove('pinching');if(S<1.05)resetZoom();
+    if(pts.size===1&&S>1){const [r]=[...pts.values()];pan={x:r.x,y:r.y,tx:TX,ty:TY};stage.classList.add('panning')}}return}
   if(pan){const moved=Math.hypot(e.clientX-pan.x,e.clientY-pan.y)>6;pan=null;stage.classList.remove('panning');
-    if(!moved&&e.type==='pointerup')zoomTo(1,e.clientX,e.clientY);return}
-  if(!sw)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y,v=dx/(e.timeStamp-sw.t||1)*1e3;sw=null;if(e.type!=='pointerup')return;
+    if(!moved&&e.type==='pointerup'&&!noTap)zoomTo(1,e.clientX,e.clientY);return}
+  if(!sw)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y,v=dx/(e.timeStamp-sw.t||1)*1e3;sw=null;if(e.type!=='pointerup'||noTap)return;
   if(Math.abs(dx)<6&&Math.abs(dy)<6)zoomTo(ZOOM,e.clientX,e.clientY);
-  else if(cur&&cur.imgs.length>1&&Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx+project(v)*.3)>60)go(dx<0?1:-1)};
+  else if(seq.length>1&&Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx+v*.12)>60)go(dx<0?1:-1)};
 stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
 vimg.addEventListener('load',paint1);
 
