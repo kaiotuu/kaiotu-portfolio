@@ -71,3 +71,6 @@ The site sends small anonymous events to `/api/collect` (a Cloudflare Function).
 Safety: 5 wrong passwords block that address for 15 minutes; the session cookie is HttpOnly, Secure, SameSite=Strict and lasts 12 hours; the pages are `noindex`, `no-store` and have a strict Content-Security-Policy. Without the database or the secrets the dashboard stays closed and the site works as before.
 
 Tests: `npm run analytics:test` (collector, login, lockout, stats and reset against a SQLite stand-in for D1).
+
+## Availability badge
+The "Available for work" pill (top of the page and above "Let's connect") is controlled in `content/site.json` → `availability`. Set `"open": false` to show the grey "Not taking new projects right now" version, change `"text"` / `"closedText"` to reword it, or delete the `availability` block to hide it.

@@ -41,6 +41,11 @@
       "status": "Attendee"
     }
   ],
+  "availability": {
+    "open": true,
+    "text": "Available for work",
+    "closedText": "Not taking new projects right now"
+  },
   "closing": "Have a project in mind? Let's connect.",
   "contact": {
     "x": {

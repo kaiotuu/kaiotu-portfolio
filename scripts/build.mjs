@@ -116,6 +116,8 @@ const photo = site.photo && manifest[site.photo]
   ? picture(site.photo, { sizes: '(min-width:761px) 40vw, 420px', alt: site.photoAlt, eager: true })
   : `<div class="ph">Placeholder<br>Your portrait goes here<br><small>set "photo" in content/site.json</small></div>`;
 const eventsHtml = site.events.map((e) => `<li><h4>${esc(e.name)}</h4><span class="y">${esc(e.year)}</span><span class="s">${esc(e.status)}</span></li>`).join('');
+const av = site.availability || {};
+const avail = (w) => av.text ? `<p class="avail ${av.open === false ? "off" : "on"} ${w}"><span class="adot" aria-hidden="true"></span>${esc(av.open === false ? (av.closedText || av.text) : av.text)}</p>` : "";
 const stylesLine = site.styles.map(esc).join(' · ');
 
 const ld = {
@@ -180,6 +182,7 @@ ${ogImg ? `<meta property="og:image" content="${ogImg}"><meta name="twitter:card
 <main>
 <section id="home" class="hero"><div class="wrap hero-grid">
 <div class="hero-t">
+${avail("hero")}
 <h1>${esc(site.name)}</h1>
 <p class="lead">${esc(site.tagline)}</p>
 <p class="intro">${esc(site.intro)}</p>
@@ -219,6 +222,7 @@ ${recentHtml}
 </main>
 
 <footer id="contact" class="alt"><div class="wrap">
+${avail("foot")}
 <p class="big">${esc(site.closing)}</p>
 <div class="actions">${dUrl ? `<a class="btn" href="${esc(dUrl)}" target="_blank" rel="noopener"${dAttr}>Let\u2019s connect</a>` : `<button type="button" class="btn copy" data-copy="${esc(dHandle)}" data-done="Copied ${esc(dHandle)}">Let\u2019s connect</button>`}</div>
 <ul class="icons" aria-label="Contact links"><li><a href="${esc(c.x.url)}" target="_blank" rel="noopener me" aria-label="X ${esc(c.x.handle)}">${svgX}</a></li><li>${dUrl ? `<a href="${esc(dUrl)}" target="_blank" rel="noopener"${dAttr} aria-label="Discord ${esc(dHandle)}">${svgDc}</a>` : `<button type="button" class="copy" data-copy="${esc(dHandle)}" aria-label="Copy Discord username ${esc(dHandle)}">${svgDc}</button>`}</li><li><a href="mailto:${esc(c.email)}" aria-label="Email ${esc(c.email)}">${svgMail}</a></li></ul>
