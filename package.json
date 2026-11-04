@@ -5,8 +5,9 @@
   "scripts": {
     "optimize": "node scripts/optimize.mjs",
     "roblox": "node scripts/roblox.mjs",
-    "build": "node scripts/optimize.mjs && node scripts/roblox.mjs --soft && node scripts/build.mjs",
-    "dev": "npm run build && npx --yes serve dist"
+    "build": "node scripts/build-analytics.mjs && node scripts/optimize.mjs && node scripts/roblox.mjs --soft && node scripts/build.mjs",
+    "dev": "npm run build && npx --yes serve dist",
+    "analytics:test": "node scripts/test-analytics.mjs"
   },
   "devDependencies": {
     "sharp": "^0.34.0"

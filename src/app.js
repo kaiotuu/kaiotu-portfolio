@@ -1,6 +1,7 @@
 (()=>{
 const $=(s,r=document)=>r.querySelector(s),$$=(s,r=document)=>[...r.querySelectorAll(s)];
 const data=JSON.parse($('#data').textContent),root=document.documentElement;
+let T=()=>{}; // analytics hook (replaced at the bottom when analytics is on)
 
 /* theme: initial value is set by an inline <head> script (no flash) */
 const tb=$('#theme'),tc=$('meta[name=theme-color]');
@@ -74,7 +75,7 @@ render();
 
 /* viewer: full-size images are only created when a piece is opened */
 const dlg=$('#viewer'),vimg=$('#v-img'),vcount=$('#v-count'),vmeta=$('#v-meta'),prev=$('#v-prev'),next=$('#v-next');
-let seq=[],pos=0,opener=null;
+let seq=[],pos=0,opener=null,vT0=0;
 const show=()=>{resetZoom();const{it,k}=seq[pos],w=it.imgs[k];vimg.src=w.src;vimg.alt=w.alt||it.t||'3D artwork by kaiotu';
   if(w.w)vimg.width=w.w,vimg.height=w.h;
   const many=seq.length>1;prev.hidden=next.hidden=!many;vcount.textContent=many?`${pos+1} / ${seq.length}`:'';
@@ -83,16 +84,16 @@ const show=()=>{resetZoom();const{it,k}=seq[pos],w=it.imgs[k];vimg.src=w.src;vim
   const rest=[it.d,it.s,it.dt].filter(Boolean).join(' · ');
   if(rest)vmeta.append((it.t?' — ':'')+rest);
   if(many){const n=seq[(pos+1)%seq.length];new Image().src=n.it.imgs[n.k].src}};
-const go=d=>{pos=(pos+d+seq.length)%seq.length;show()};
+const go=d=>{pos=(pos+d+seq.length)%seq.length;show();T('vnav',seq[pos].it.t,d>0?'next':'prev')};
 /* arrows and swipes move through the pieces of the section that was opened (a category, or Recent Work) */
 $$('.thumb[data-i]').forEach(b=>b.onclick=()=>{
   const root=b.closest('.cat')||b.closest('#recent')||document,ids=[...new Set($$('.thumb[data-i]',root).map(x=>+x.dataset.i))];
   seq=[];ids.forEach(i=>data.items[i].imgs.forEach((_,k)=>seq.push({it:data.items[i],k})));
-  const me=data.items[+b.dataset.i];pos=Math.max(0,seq.findIndex(s=>s.it===me&&s.k===0));opener=b;show();dlg.showModal();dlg.focus()});
+  const me=data.items[+b.dataset.i];pos=Math.max(0,seq.findIndex(s=>s.it===me&&s.k===0));opener=b;vT0=Date.now();show();dlg.showModal();dlg.focus()});
 prev.onclick=()=>go(-1);next.onclick=()=>go(1);$('#v-close').onclick=()=>dlg.close();
 dlg.addEventListener('keydown',e=>{if(seq.length>1){if(e.key==='ArrowLeft')go(-1);if(e.key==='ArrowRight')go(1)}});
 dlg.addEventListener('click',e=>{if(e.target===dlg)dlg.close()});
-dlg.addEventListener('close',()=>{resetZoom();vimg.removeAttribute('src');opener&&opener.focus()});
+dlg.addEventListener('close',()=>{if(seq[pos])T('vclose',seq[pos].it.t,'',Date.now()-vT0);resetZoom();vimg.removeAttribute('src');opener&&opener.focus()});
 /* zoom: click/tap the image to zoom in at that spot, click again to zoom out; drag to move when zoomed;
    at 100% a horizontal swipe moves to the next/previous image. */
 const stage=$('#v-stage'),ZOOM=2.5;
@@ -114,12 +115,12 @@ stage.addEventListener('pointermove',e=>{if(pts.has(e.pointerId))pts.set(e.point
   if(pan){TX=pan.tx+e.clientX-pan.x;TY=pan.ty+e.clientY-pan.y;paint1()}});
 const up=e=>{
   const wasPinch=!!pinch;pts.delete(e.pointerId);
-  if(wasPinch){if(pts.size<2){pinch=null;stage.classList.remove('pinching');if(S<1.05)resetZoom();
+  if(wasPinch){if(pts.size<2){pinch=null;stage.classList.remove('pinching');if(S<1.05)resetZoom();else T('zoom',seq[pos].it.t,'pinch');
     if(pts.size===1&&S>1){const [r]=[...pts.values()];pan={x:r.x,y:r.y,tx:TX,ty:TY};stage.classList.add('panning')}}return}
   if(pan){const moved=Math.hypot(e.clientX-pan.x,e.clientY-pan.y)>6;pan=null;stage.classList.remove('panning');
     if(!moved&&e.type==='pointerup'&&!noTap)zoomTo(1,e.clientX,e.clientY);return}
   if(!sw)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y,v=dx/(e.timeStamp-sw.t||1)*1e3;sw=null;if(e.type!=='pointerup'||noTap)return;
-  if(Math.abs(dx)<6&&Math.abs(dy)<6)zoomTo(ZOOM,e.clientX,e.clientY);
+  if(Math.abs(dx)<6&&Math.abs(dy)<6){zoomTo(ZOOM,e.clientX,e.clientY);T('zoom',seq[pos].it.t,'tap')}
   else if(seq.length>1&&Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx+v*.12)>60)go(dx<0?1:-1)};
 stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
 vimg.addEventListener('load',paint1);
@@ -194,4 +195,86 @@ $$('a[data-app]').forEach(a=>a.addEventListener('click',e=>{
   addEventListener('blur',mark,{once:true});document.addEventListener('visibilitychange',mark,{once:true});
   const f=document.createElement('iframe');f.hidden=true;f.src=a.dataset.app;document.body.append(f);
   setTimeout(()=>{f.remove();if(!left)window.open(a.href,'_blank','noopener')},1200)}));
+
+/* analytics: anonymous, first-party, sent to /api/collect. Off when: data.analytics is false, localhost/file, Do Not Track or
+   Global Privacy Control is on, or the owner opened the site once with ?notrack (stored in this browser; ?track turns it back on).
+   Stored ids are random strings in localStorage/sessionStorage; no cookies, no IP, nothing personal. */
+(()=>{
+  let off=false;try{const q=new URLSearchParams(location.search);if(q.has('notrack'))localStorage.setItem('kt-nt','1');if(q.has('track'))localStorage.removeItem('kt-nt');off=localStorage.getItem('kt-nt')==='1'}catch{}
+  if(off||!data.analytics||navigator.doNotTrack==='1'||navigator.globalPrivacyControl||!/^https?:$/.test(location.protocol)||/^(localhost|127\.0\.0\.1|\[::1\])$/.test(location.hostname))return;
+  const rid=()=>{const a=new Uint8Array(12);crypto.getRandomValues(a);return[...a].map(b=>b.toString(16).padStart(2,'0')).join('')};
+  let vid,nv=0,sid;
+  try{vid=localStorage.getItem('kt-v');if(!/^[a-f0-9]{24}$/.test(vid||'')){vid=rid();localStorage.setItem('kt-v',vid);nv=1}}catch{vid=rid();nv=1}
+  try{sid=sessionStorage.getItem('kt-s');if(!/^[a-f0-9]{24}$/.test(sid||'')){sid=rid();sessionStorage.setItem('kt-s',sid)}}catch{sid=rid()}
+  const q=[];let eng=0,vis=document.visibilityState==='visible',t0=Date.now(),maxS=0,tmr=0;
+  const engaged=()=>eng+(vis?Date.now()-t0:0);
+  const host=u=>{try{return new URL(u).host.replace(/^www\./,'')}catch{return''}};
+  const meta=()=>{const p=new URLSearchParams(location.search),r=host(document.referrer);
+    return{nv,l:(navigator.language||'').slice(0,12),w:innerWidth,r:r&&r!==host(location.href)?r:'',us:p.get('utm_source')||'',um:p.get('utm_medium')||'',uc:p.get('utm_campaign')||''}};
+  let flush=()=>{clearTimeout(tmr);tmr=0;
+    const now=Date.now(),body=JSON.stringify({v:vid,s:sid,m:meta(),d:engaged(),sc:maxS,e:q.splice(0,40).map(e=>({t:e.t,a:e.a,b:e.b,n:e.n,o:now-e.ts}))});
+    try{if(!(navigator.sendBeacon&&navigator.sendBeacon('/api/collect',new Blob([body],{type:'text/plain'}))))fetch('/api/collect',{method:'POST',body,keepalive:true,headers:{'Content-Type':'text/plain'}}).catch(()=>{})}catch{}};
+  T=(t,a,b,n)=>{q.push({t,a:a==null?'':String(a),b:b==null?'':String(b),n:n|0,ts:Date.now()});if(q.length>=10)flush();else if(!tmr)tmr=setTimeout(flush,4000)};
+  const hide=()=>{if(vis){eng+=Date.now()-t0;vis=false}flush(1)};
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')hide();else{vis=true;t0=Date.now()}});
+  addEventListener('pagehide',hide);
+  setInterval(()=>{if(vis)flush()},20000);
+  setTimeout(flush,1500); // registers the visit even if nothing is clicked
+  /* scroll depth */
+  let raf=0;const sc=()=>{raf=0;const h=document.documentElement.scrollHeight-innerHeight;const p=h>0?Math.round(Math.min(1,(scrollY)/h)*100):100;if(p>maxS)maxS=p};
+  addEventListener('scroll',()=>{if(!raf)raf=requestAnimationFrame(sc)},{passive:true});sc();
+  /* sections reached: a band across the middle of the screen (works for very tall sections), footer when it is mostly visible */
+  if('IntersectionObserver'in window){
+    const seen=new Set(),ob=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!seen.has(e.target.id)){seen.add(e.target.id);T('section',e.target.id)}}),{rootMargin:'-40% 0px -40% 0px'});
+    $$('#home,#work,#recent,#contributions,#about').forEach(s=>ob.observe(s));
+    const fo=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!seen.has('contact')){seen.add('contact');T('section','contact')}}),{threshold:.6});
+    const f=$('#contact');f&&fo.observe(f);
+  }
+  /* which pieces were actually seen (60% visible, once per visit), so opens can be compared with views */
+  if('IntersectionObserver'in window){
+    const shown=new Set(),io=new IntersectionObserver(es=>es.forEach(e=>{const b=e.target;if(!e.isIntersecting||b.closest('[inert],[hidden]')||b.closest('[data-clone]'))return;
+      const it=data.items[+b.dataset.i];if(!it||shown.has(b.dataset.i))return;shown.add(b.dataset.i);T('imp',it.t,b.closest('#recent')?'recent':(it.c||''))}),{threshold:.6});
+    $$('.thumb[data-i]').forEach(b=>io.observe(b));
+    /* cards of other categories appear when a tab is opened: re-check them */
+    addEventListener('click',e=>{if(e.target.closest&&e.target.closest('[role=tab],.viewall'))setTimeout(()=>$$('.cat:not([hidden]) .thumb[data-i]').forEach(b=>{io.unobserve(b);io.observe(b)}),80)},true);
+  }
+  /* time spent in each section (only while the tab is visible), sent as the extra seconds since the last send */
+  const dw={},sent={};let cur=null,dt0=0;
+  const bank=()=>{if(cur&&dt0){dw[cur]=(dw[cur]||0)+Date.now()-dt0}dt0=vis&&cur?Date.now():0};
+  if('IntersectionObserver'in window){
+    const so=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){bank();cur=e.target.id==='contact'?'contact':e.target.id;dt0=vis?Date.now():0}});},{rootMargin:'-45% 0px -45% 0px'});
+    $$('#home,#work,#recent,#contributions,#about,#contact').forEach(s=>so.observe(s));
+  }
+  document.addEventListener('visibilitychange',bank);
+  const flushDwell=()=>{bank();for(const k in dw){const d=Math.round(dw[k]-(sent[k]||0));if(d>=1000){sent[k]=(sent[k]||0)+d;q.push({t:'dwell',a:k,b:'',n:d,ts:Date.now()})}}};
+  const _f=flush;flush=fin=>{if(fin===1)flushDwell();_f()};
+  /* speed (sent once) and script errors (max 5 per visit) */
+  let perfDone=0,lcp=0;try{new PerformanceObserver(l=>{const e=l.getEntries().pop();if(e)lcp=Math.round(e.startTime)}).observe({type:'largest-contentful-paint',buffered:true})}catch{}
+  addEventListener('pagehide',()=>{if(perfDone)return;perfDone=1;try{const n=performance.getEntriesByType('navigation')[0];if(n&&n.loadEventEnd>0){q.push({t:'perf',a:'load',b:'',n:Math.round(n.loadEventEnd),ts:Date.now()});if(lcp)q.push({t:'perf',a:'lcp',b:'',n:lcp,ts:Date.now()});flush(1)}}catch{}});
+  let errs=0;addEventListener('error',e=>{if(errs++<5)T('err',(e.message||'error').slice(0,80),((e.filename||'').split('/').pop()||'').slice(0,40))});
+  addEventListener('unhandledrejection',()=>{if(errs++<5)T('err','promise rejected','')});
+  /* clicks */
+  let curTab=(($('.cat:not([hidden])')||{}).dataset||{}).cat||'';
+  const hostOf=a=>host(a.href);
+  addEventListener('click',e=>{const el=e.target.closest&&e.target.closest('a,button,[role=tab]');if(!el)return;
+    if(el.matches('[role=tab]')){T('tab',el.dataset.cat,curTab);curTab=el.dataset.cat;return}
+    if(el.classList.contains('viewall')){setTimeout(()=>T('viewall',curTab,el.getAttribute('aria-expanded')==='true'?'open':'close'));return}
+    if(el.matches('.thumb[data-i]')){const it=data.items[+el.dataset.i]||{};T('open',it.t,el.closest('#recent')?'recent':(it.c||''));return}
+    if(el.closest('#viewer'))return;
+    if(el.id==='theme'){setTimeout(()=>T('theme',root.dataset.theme));return}
+    if(el.id==='contact-btn'){setTimeout(()=>{if(el.getAttribute('aria-expanded')==='true')T('panel','open')});return}
+    if(el.id==='burger'){T('menu','open');return}
+    if(el.id==='rpause'){setTimeout(()=>T('rpause',el.textContent==='Play'?'pausou':'retomou'));return}
+    if(el.id==='rprev'||el.id==='rnext'){T('rarrow',el.id==='rprev'?'voltar':'avançar');return}
+    if(el.closest('#menu')&&el.matches('a')){T('nav',el.getAttribute('href')||'');return}
+    if(el.closest('.hero')&&el.matches('a')){T('cta',el.classList.contains('btn')?'explore':'contributions');return}
+    if(el.closest('.xgrid')){const h=el.querySelector('h3');T('experience',h?h.textContent:'');return}
+    const where=el.closest('#cpanel')?'panel':'footer';
+    if(el.closest('#contact')&&el.classList.contains('btn')){T('connect',el.matches('[data-copy]')?'copy':'discord');return}
+    if(el.closest('.icons,.clist')){
+      if(el.matches('[data-copy]')){T('copy','discord',where);return}
+      const h=el.href||'';T('social',/^mailto:/.test(h)?'email':/x\.com|twitter\.com/.test(h)?'x':/discord/.test(h)?'discord':host(h),where);return}
+    if(el.matches('a[href^=http]')&&hostOf(el)!==host(location.href)){T('outbound',hostOf(el))}
+  },true);
+})();
 })();

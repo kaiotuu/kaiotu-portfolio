@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta name="color-scheme" content="dark light">
+<title>Analytics</title>
+<style nonce="__NONCE__">
+:root{--bg:#0a0a0b;--bg2:#101011;--card:#151517;--fg:#ededee;--mute:#9b9b9f;--line:rgba(255,255,255,.1);--chip:rgba(255,255,255,.07);--bar:#d6d6da;--bar2:#6b6b72;--good:#5ad08a;--bad:#ff7a7a;--btn:#ededee;--btnfg:#0a0a0b}
+:root[data-t=light]{--bg:#f5f5f7;--bg2:#fff;--card:#fff;--fg:#1d1d1f;--mute:#6e6e73;--line:rgba(0,0,0,.1);--chip:rgba(0,0,0,.06);--bar:#1d1d1f;--bar2:#b5b5ba;--good:#1a8f4d;--bad:#d03a3a;--btn:#0b0b0d;--btnfg:#fff}
+@media(prefers-color-scheme:light){:root:not([data-t=dark]){--bg:#f5f5f7;--bg2:#fff;--card:#fff;--fg:#1d1d1f;--mute:#6e6e73;--line:rgba(0,0,0,.1);--chip:rgba(0,0,0,.06);--bar:#1d1d1f;--bar2:#b5b5ba;--good:#1a8f4d;--bad:#d03a3a;--btn:#0b0b0d;--btnfg:#fff}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 -apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+.top{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 85%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);border-bottom:1px solid var(--line)}
+.bar{max-width:1240px;margin:0 auto;padding:12px 20px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+.brand{font-weight:600;letter-spacing:-.02em;font-size:17px;margin-right:auto}.brand span{color:var(--mute);font-weight:400}
+.live{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--mute);background:var(--chip);border-radius:999px;padding:6px 12px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--good);box-shadow:0 0 0 0 var(--good);animation:p 2s infinite}@keyframes p{70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+.seg{display:inline-flex;background:var(--chip);border-radius:999px;padding:3px}
+.seg button{border:0;background:none;border-radius:999px;padding:6px 14px;font-size:13px;color:var(--mute);min-height:32px}
+.seg button[aria-pressed=true]{background:var(--btn);color:var(--btnfg)}
+.ib{border:1px solid var(--line);background:none;border-radius:999px;padding:6px 14px;font-size:13px;min-height:34px}
+.ib:hover{background:var(--chip)}
+.tabs{max-width:1240px;margin:0 auto;padding:0 20px 10px;display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{border:0;background:none;white-space:nowrap;border-radius:999px;padding:8px 14px;color:var(--mute);font-size:14px;min-height:36px}
+.tabs button[aria-selected=true]{background:var(--chip);color:var(--fg)}
+main{max-width:1240px;margin:0 auto;padding:22px 20px 80px}
+.grid{display:grid;gap:16px}.k4{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.c2{grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}.c3{grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 20px;min-width:0}
+.card h3{margin:0 0 12px;font-size:14px;font-weight:600;color:var(--mute);letter-spacing:.01em}
+.kpi .v{font-size:34px;font-weight:600;letter-spacing:-.03em;line-height:1.1}.kpi .l{color:var(--mute);font-size:13px;margin-top:2px}
+.d{font-size:12px;margin-top:6px;color:var(--mute)}.up{color:var(--good)}.dn{color:var(--bad)}
+.row{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto;gap:10px;align-items:center;padding:6px 0;font-size:14px}
+.row .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.row .t{height:8px;border-radius:99px;background:var(--chip);overflow:hidden}.row .t i{display:block;height:100%;background:var(--bar);border-radius:99px}
+.row .c{color:var(--mute);font-variant-numeric:tabular-nums;font-size:13px;text-align:right;min-width:64px}
+.mute{color:var(--mute)}.small{font-size:13px}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line)}th{color:var(--mute);font-weight:500;font-size:12px}td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+.empty{padding:40px 20px;text-align:center;color:var(--mute)}
+.note{background:var(--chip);border-radius:14px;padding:12px 14px;font-size:13px;color:var(--mute);margin-bottom:16px}
+svg text{fill:var(--mute);font-size:11px}
+.jr{border-top:1px solid var(--line);padding:14px 0}.jr:first-child{border-top:0}.jh{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px;color:var(--mute);margin-bottom:8px}.jh b{color:var(--fg);font-weight:600}
+.st{display:flex;flex-wrap:wrap;gap:6px}.st span{background:var(--chip);border-radius:999px;padding:4px 10px;font-size:12.5px}.st em{font-style:normal;color:var(--mute);margin-right:6px;font-size:11px}
+.feed div{display:grid;grid-template-columns:70px 1fr auto;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}.feed time{color:var(--mute);font-size:12px}
+.hide{display:none}
+@media(max-width:560px){.kpi .v{font-size:28px}.row{grid-template-columns:minmax(0,1fr) auto}.row .t{display:none}}
+</style>
+</head>
+<body>
+<header class="top">
+<div class="bar">
+<div class="brand">kaiotu <span>· analytics</span></div>
+<div class="live" id="live"><i class="dot"></i><span id="liveN">–</span></div>
+<div class="seg" id="range" role="group" aria-label="Período">
+<button data-r="24h" aria-pressed="false">24h</button><button data-r="7d" aria-pressed="true">7 dias</button><button data-r="30d" aria-pressed="false">30 dias</button><button data-r="90d" aria-pressed="false">90 dias</button><button data-r="all" aria-pressed="false">Tudo</button>
+</div>
+<button class="ib" id="csvS" title="Baixar sessões (CSV)">⤓ Sessões</button>
+<button class="ib" id="csvE" title="Baixar eventos (CSV)">⤓ Eventos</button>
+<button class="ib" id="th" aria-label="Trocar tema">Tema</button>
+<form method="post" action="/analytics/logout"><button class="ib" type="submit">Sair</button></form>
+</div>
+<nav class="tabs" id="tabs" role="tablist" aria-label="Seções"></nav>
+</header>
+<main id="main"><div class="empty">Carregando…</div></main>
+<script nonce="__NONCE__">
+(function(){
+'use strict';
+var $=function(s,r){return (r||document).querySelector(s)};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var NF=new Intl.NumberFormat('pt-BR');var n0=function(v){return NF.format(Math.round(v||0))};
+var pct=function(a,b){return b>0?Math.round(a/b*100):0};
+var dur=function(ms){var s=Math.round((ms||0)/1000);if(s<60)return s+'s';var m=Math.floor(s/60);return m+'m '+(s%60<10?'0':'')+(s%60)+'s'};
+var CAT={clothes:'3D Clothes',weapons:'Firearms & Melee Weapons',vehicles:'Cars & Vehicles',assets:'Game Assets',all:'All',recent:'Recent Work','(sem categoria)':'(sem categoria)'};
+var SEC={home:'Início',work:'Work',recent:'Recent Work',contributions:'Contributions',about:'About Me',contact:'Rodapé'};
+var WD=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+var cat=function(k){return CAT[k]||k||'—'};
+var R='7d',DATA=null,TAB='geral';
+var TABS=[['geral','Visão geral'],['comp','Comportamento'],['port','Portfólio'],['contato','Contato e cliques'],['publico','Público'],['origem','Origens'],['jornadas','Jornadas'],['tec','Técnico'],['vivo','Ao vivo'],['aj','Ajustes']];
+
+// theme
+var root=document.documentElement;try{var st=localStorage.getItem('ka-t');if(st)root.dataset.t=st}catch(e){}
+$('#th').onclick=function(){var d=root.dataset.t||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');d=d==='dark'?'light':'dark';root.dataset.t=d;try{localStorage.setItem('ka-t',d)}catch(e){}};
+
+// tabs
+var tb=$('#tabs');tb.innerHTML=TABS.map(function(t){return '<button role="tab" data-t="'+t[0]+'" aria-selected="'+(t[0]===TAB)+'">'+t[1]+'</button>'}).join('');
+tb.onclick=function(e){var b=e.target.closest('button');if(!b)return;TAB=b.dataset.t;[].forEach.call(tb.children,function(x){x.setAttribute('aria-selected',x===b)});render()};
+$('#range').onclick=function(e){var b=e.target.closest('button');if(!b)return;R=b.dataset.r;[].forEach.call($('#range').children,function(x){x.setAttribute('aria-pressed',x===b)});load()};
+$('#csvS').onclick=function(){location.href='/analytics/api?export=sessions&range='+R};
+$('#csvE').onclick=function(){location.href='/analytics/api?export=events&range='+R};
+
+// pieces
+function delta(a,b,inv){if(!b&&!a)return '';if(!b)return '<div class="d">novo período</div>';var p=Math.round((a-b)/b*100);var good=inv?p<0:p>0;return '<div class="d '+(p===0?'':good?'up':'dn')+'">'+(p>0?'▲ ':p<0?'▼ ':'')+Math.abs(p)+'% vs período anterior</div>'}
+function kpi(v,l,d,tip){return '<div class="card kpi" title="'+esc(tip||'')+'"><div class="v">'+v+'</div><div class="l">'+l+'</div>'+(d||'')+'</div>'}
+function bars(rows,opt){opt=opt||{};if(!rows.length)return '<div class="mute small">Sem dados ainda.</div>';var max=Math.max.apply(null,rows.map(function(r){return r.c}))||1,tot=opt.total||rows.reduce(function(a,r){return a+r.c},0)||1;
+return rows.map(function(r){var label=opt.label?opt.label(r.k,r):r.k;return '<div class="row"><div class="n" title="'+esc(label)+'">'+esc(label)+'</div><div class="t"><i data-w="'+Math.max(2,Math.round(r.c/max*100))+'"></i></div><div class="c">'+n0(r.c)+' · '+pct(r.c,tot)+'%</div></div>'}).join('')}
+function card(title,body,extra){return '<div class="card '+(extra||'')+'"><h3>'+title+'</h3>'+body+'</div>'}
+function chart(series,hourly){if(!series.length)return '';var W=760,H=190,pl=30,pb=22,pt=8,iw=W-pl-4,ih=H-pb-pt,max=Math.max.apply(null,series.map(function(d){return d.s}))||1,bw=iw/series.length;
+var out='<svg viewBox="0 0 '+W+' '+H+'" width="100%" role="img" aria-label="Visitas por '+(hourly?'hora':'dia')+'">';
+[0,.5,1].forEach(function(f){var y=pt+ih-ih*f;out+='<line x1="'+pl+'" x2="'+(W-4)+'" y1="'+y+'" y2="'+y+'" stroke="currentColor" opacity=".12"/><text x="0" y="'+(y+4)+'">'+Math.round(max*f)+'</text>'});
+series.forEach(function(d,i){var h=ih*d.s/max,hv=ih*d.v/max,x=pl+i*bw;out+='<g><title>'+esc(d.d)+' · '+d.s+' visitas · '+d.v+' pessoas</title><rect x="'+(x+bw*.12)+'" y="'+(pt+ih-h)+'" width="'+Math.max(1,bw*.76)+'" height="'+h+'" rx="3" fill="var(--bar2)"/><rect x="'+(x+bw*.12)+'" y="'+(pt+ih-hv)+'" width="'+Math.max(1,bw*.76)+'" height="'+hv+'" rx="3" fill="var(--bar)"/></g>'});
+var every=Math.ceil(series.length/8);series.forEach(function(d,i){if(i%every)return;var l=hourly?d.d.slice(11)+'h':d.d.slice(8)+'/'+d.d.slice(5,7);out+='<text x="'+(pl+i*bw)+'" y="'+(H-5)+'">'+l+'</text>'});
+return out+'</svg><div class="small mute" style="margin-top:6px"><span style="color:var(--bar)">■</span> pessoas diferentes &nbsp; <span style="color:var(--bar2)">■</span> visitas</div>'}
+function hours(h){var W=720,H=120,max=Math.max.apply(null,h.map(function(x){return x.c}))||1,bw=W/24,o='<svg viewBox="0 0 '+W+' '+(H+18)+'" width="100%" role="img" aria-label="Visitas por hora do dia">';h.forEach(function(x,i){var hh=H*x.c/max;o+='<g><title>'+x.k+'h · '+x.c+' visitas</title><rect x="'+(i*bw+2)+'" y="'+(H-hh)+'" width="'+(bw-4)+'" height="'+hh+'" rx="3" fill="var(--bar)"/></g>';if(i%3===0)o+='<text x="'+(i*bw+2)+'" y="'+(H+14)+'">'+x.k+'h</text>'});return o+'</svg>'}
+function list(rows,fmt){return rows.length?rows.map(fmt).join(''):'<div class="mute small">Sem dados ainda.</div>'}
+function stepLabel(s){var t=s.t,a=s.a,b=s.b;
+ if(t==='section')return 'Viu '+(SEC[a]||a);
+ if(t==='tab')return 'Aba '+cat(a)+(b?' (veio de '+cat(b)+')':'');
+ if(t==='open')return 'Abriu “'+a+'”';
+ if(t==='vclose')return 'Fechou o visor'+(a?' de “'+a+'”':'');
+ if(t==='vnav')return (b==='prev'?'Voltou':'Avançou')+' no visor';
+ if(t==='zoom')return 'Deu zoom'+(b?' ('+b+')':'');
+ if(t==='viewall')return (b==='open'?'Abriu':'Fechou')+' “View all” em '+cat(a);
+ if(t==='cta')return a==='explore'?'Clicou em Explore My Work':'Clicou em Contributions';
+ if(t==='connect')return 'Let’s connect ('+(a==='copy'?'copiou o usuário':'abriu o Discord')+')';
+ if(t==='social')return 'Clicou no ícone '+a+(b==='panel'?' (painel)':'');
+ if(t==='copy')return 'Copiou '+a;
+ if(t==='panel')return 'Abriu o painel de contato';
+ if(t==='menu')return 'Abriu o menu';
+ if(t==='nav')return 'Menu → '+a;
+ if(t==='theme')return 'Tema '+a;
+ if(t==='experience')return 'Abriu experiência “'+a+'”';
+ if(t==='outbound')return 'Saiu para '+a;
+ if(t==='rpause')return 'Recent: '+a;
+ if(t==='rarrow')return 'Recent: seta '+a;
+ if(t==='err')return 'Erro no navegador: '+a;
+ return t+' '+a}
+function actLabel(r){var t=r.t,a=r.a,b=r.b;
+ if(t==='connect')return 'Let’s connect — '+(a==='copy'?'copiou o usuário':'abriu o Discord');
+ if(t==='social')return 'Ícone '+a+(b==='panel'?' (no painel de contato)':' (rodapé)');
+ if(t==='copy')return 'Copiou o '+a+(b?' ('+b+')':'');
+ if(t==='panel')return 'Abriu o painel de contato (envelope)';
+ if(t==='menu')return 'Abriu o menu';
+ if(t==='nav')return 'Menu → '+a;
+ if(t==='theme')return 'Trocou o tema para '+a;
+ if(t==='experience')return 'Experiência: '+a;
+ if(t==='outbound')return 'Link externo: '+a;
+ if(t==='cta')return a==='explore'?'Botão Explore My Work':'Link Contributions (hero)';
+ if(t==='rpause')return 'Recent Work: '+a;
+ if(t==='rarrow')return 'Recent Work: seta '+a;
+ if(t==='viewall')return '“View all” em '+cat(a)+' ('+(b==='open'?'abrir':'fechar')+')';
+ return t+' '+a}
+function ago(ts){var s=Math.round((Date.now()-ts)/1000);if(s<60)return s+'s';if(s<3600)return Math.round(s/60)+' min';if(s<86400)return Math.round(s/3600)+' h';return Math.round(s/86400)+' d'}
+var fmtT=function(ts){return new Date(ts).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})};
+
+// views
+var V={};
+V.geral=function(d){var c=d.totals,p=d.previous,bounce=pct(c.bounce,c.sessions),pb=pct(p.bounce,p.sessions);
+ var ret=pct(c.retSessions,c.sessions);
+ return '<div class="grid k4">'+
+ kpi(n0(c.visitors),'Pessoas diferentes',delta(c.visitors,p.visitors),'Navegadores diferentes (id anônimo guardado no aparelho)')+
+ kpi(n0(c.sessions),'Visitas',delta(c.sessions,p.sessions))+
+ kpi(ret+'%','Visitas de quem já tinha vindo','<div class="d">'+n0(c.retv)+' pessoas voltaram</div>')+
+ kpi(dur(c.dur),'Tempo médio na página',delta(c.dur,p.dur),'Só conta o tempo com a aba aberta e visível')+
+ kpi(Math.round(c.scroll||0)+'%','Quanto da página desceram (média)')+
+ kpi(bounce+'%','Saíram sem fazer nada',delta(bounce,pb,true),'Menos de 10 s e nenhuma interação')+
+ kpi(pct(d.behavior.openSessions,c.sessions)+'%','Abriram alguma criação','<div class="d">'+n0(d.behavior.opens)+' aberturas</div>')+
+ kpi(pct(d.behavior.tabSessions,c.sessions)+'%','Trocaram de categoria','<div class="d">'+n0(d.behavior.tabSwitches)+' trocas</div>')+
+ '</div><div style="height:16px"></div><div class="grid c2">'+
+ card('Visitas e pessoas '+(d.hourly?'por hora':'por dia'),chart(d.series,d.hourly))+
+ card('Funil: até onde as pessoas foram',bars(d.funnel.map(function(f){return {k:f.k,c:f.c}}),{total:c.sessions}))+
+ card('Horário das visitas (horário de Brasília)',hours(d.hours))+
+ card('Dia da semana',bars(d.weekdays.map(function(w){return {k:WD[w.k],c:w.c}})))+
+ '</div>'};
+V.comp=function(d){var b=d.behavior,c=d.totals;
+ var scroll=d.scroll.map(function(s){return {k:s.k===100?'Chegaram ao fim (100%)':s.k+'–'+(s.k+24)+'%',c:s.c}});
+ return '<div class="grid k4">'+
+ kpi(pct(b.tabSessions,c.sessions)+'%','Trocaram de categoria em Work','<div class="d">'+(b.tabSessions?(b.tabSwitches/b.tabSessions).toFixed(1):'0')+' trocas por pessoa que trocou</div>')+
+ kpi((b.openSessions?(b.opens/b.openSessions).toFixed(1):'0'),'Criações abertas por visita (de quem abriu)')+
+ kpi(pct(b.zoomSessions,Math.max(b.openSessions,1))+'%','Dos que abriram, deram zoom','<div class="d">'+n0(b.zooms)+' zooms</div>')+
+ kpi(dur(b.avgViewMs),'Tempo médio olhando uma criação','<div class="d">'+n0(b.vnavs)+' vezes no avançar/voltar</div>')+
+ '</div><div style="height:16px"></div><div class="grid c2">'+
+ card('Até que parte do site chegaram',bars(d.sections.map(function(s){return {k:SEC[s.k]||s.k,c:s.c}}),{total:c.sessions}))+
+ card('Profundidade da rolagem',bars(scroll,{total:c.sessions}))+
+ card('Tempo em cada parte do site (média por pessoa que chegou lá)',(function(){var mx=Math.max.apply(null,d.dwellSections.map(function(s){return s.ms}))||1;return d.dwellSections.map(function(s){return '<div class="row"><div class="n">'+esc(SEC[s.k]||s.k)+'</div><div class="t"><i data-w="'+Math.max(2,Math.round(s.ms/mx*100))+'"></i></div><div class="c">'+(s.ms?dur(s.ms):'—')+'</div></div>'}).join('')})())+
+ card('Trocas entre categorias (de → para)',list(d.transitions,function(t){return '<div class="row"><div class="n">'+esc(cat(t.f))+' → '+esc(cat(t.t))+'</div><div class="t"><i data-w="'+Math.max(4,Math.round(t.c/d.transitions[0].c*100))+'"></i></div><div class="c">'+t.c+'</div></div>'}))+
+ card('Categorias mais visitadas (abas)',bars(d.tabs.map(function(t){return {k:cat(t.k),c:t.c}})))+
+ '</div>'};
+V.port=function(d){
+ return '<div class="grid c2">'+
+ card('Categorias: o que mais chama atenção',d.categories.length?'<table><thead><tr><th>Categoria</th><th class="r">Vezes na aba</th><th class="r">Criações abertas</th><th class="r">Visitas que abriram</th></tr></thead><tbody>'+d.categories.map(function(c){return '<tr><td>'+esc(cat(c.k))+'</td><td class="r">'+n0(c.tabs)+'</td><td class="r">'+n0(c.opens)+'</td><td class="r">'+n0(c.sessions)+'</td></tr>'}).join('')+'</tbody></table><p class="small mute">“All” e “Recent Work” também entram na conta das categorias das peças.</p>':'<div class="mute small">Sem dados ainda.</div>')+
+ card('Criações: vistas, abertas e tempo olhando',d.items.length?'<p class="small mute" style="margin:0 0 8px">“Viram” = o card ficou visível na tela. “Abriram %” = de quem viu, quantos abriram.</p><table><thead><tr><th>Criação</th><th class="r">Viram</th><th class="r">Aberturas</th><th class="r">Abriram %</th><th class="r">Tempo olhando</th></tr></thead><tbody>'+d.items.map(function(i){return '<tr><td>'+esc(i.title)+'<div class="small mute">'+esc(cat(i.cat))+'</div></td><td class="r">'+(i.imps?n0(i.imps):'—')+'</td><td class="r">'+n0(i.c)+'</td><td class="r">'+(i.imps?Math.min(100,pct(i.s||0,i.imps))+'%':'—')+'</td><td class="r">'+(i.avgViewMs?dur(i.avgViewMs):'—')+'</td></tr>'}).join('')+'</tbody></table>':'<div class="mute small">Sem dados ainda.</div>')+
+ '</div>'};
+V.contato=function(d){
+ var g=function(f){return d.actions.filter(f)};var sum=function(rows){return rows.reduce(function(a,r){return a+r.c},0)};
+ var conn=g(function(r){return r.t==='connect'}),soc=g(function(r){return r.t==='social'}),cp=g(function(r){return r.t==='copy'}),pn=g(function(r){return r.t==='panel'});
+ return '<div class="grid k4">'+
+ kpi(n0(sum(conn)),'Cliques em Let’s connect','<div class="d">'+pct(sum(conn),d.totals.sessions)+'% das visitas</div>')+
+ kpi(n0(sum(soc)),'Cliques nos ícones (X, Discord, Email)')+
+ kpi(n0(sum(cp)),'Vezes que copiaram o Discord')+
+ kpi(n0(sum(pn)),'Abriram o painel de contato (envelope)')+
+ '</div><div style="height:16px"></div><div class="grid c2">'+
+ card('Todos os cliques e ações',d.actions.length?'<table><thead><tr><th>Ação</th><th class="r">Vezes</th><th class="r">Visitas</th></tr></thead><tbody>'+d.actions.map(function(r){return '<tr><td>'+esc(actLabel(r))+'</td><td class="r">'+n0(r.c)+'</td><td class="r">'+n0(r.s)+'</td></tr>'}).join('')+'</tbody></table>':'<div class="mute small">Sem dados ainda.</div>')+
+ card('Experiências (Contributions) mais clicadas',bars(g(function(r){return r.t==='experience'}).map(function(r){return {k:r.a,c:r.c}})))+
+ '</div>'};
+V.publico=function(d){var a=d.audience,t=d.totals.sessions;var f=function(rows,lab){return bars(rows.map(function(r){return {k:r.k,c:r.c}}),{total:t,label:lab})};
+ return '<div class="grid c3">'+card('Países',f(a.countries))+card('Aparelhos',f(a.devices))+card('Navegadores',f(a.browsers))+card('Sistemas',f(a.os))+card('Idiomas do navegador',f(a.langs))+card('Tamanho de tela',f(a.screens))+'</div>'};
+V.origem=function(d){var s=d.sources,t=d.totals.sessions;
+ return '<div class="grid c2">'+card('De onde vieram',bars(s.referrers.map(function(r){return {k:r.k,c:r.c}}),{total:t}))+
+ card('Campanhas (UTM)',s.utm.length?'<table><thead><tr><th>Origem</th><th>Meio</th><th>Campanha</th><th class="r">Visitas</th></tr></thead><tbody>'+s.utm.map(function(u){return '<tr><td>'+esc(u.s||'—')+'</td><td>'+esc(u.m||'—')+'</td><td>'+esc(u.cmp||'—')+'</td><td class="r">'+n0(u.c)+'</td></tr>'}).join('')+'</tbody></table>':'<div class="mute small">Nenhuma ainda. Use links como <code>?utm_source=discord&amp;utm_medium=bio</code> para saber de onde cada clique veio.</div>')+'</div>'};
+V.jornadas=function(d){
+ return '<div class="card"><h3>Últimas visitas (anônimas) e o caminho de cada uma</h3>'+(d.journeys.length?d.journeys.map(function(j){
+  var steps=j.steps.length?j.steps.map(function(s){return '<span><em>'+(s.dt<1000?'0s':dur(s.dt))+'</em>'+esc(stepLabel(s))+'</span>'}).join(''):'<span>Só olhou o início</span>';
+  return '<div class="jr"><div class="jh"><b>'+fmtT(j.ts)+'</b><span>'+esc(j.country||'?')+(j.region?' · '+esc(j.region):'')+'</span><span>'+esc(j.device)+' · '+esc(j.browser)+' · '+esc(j.os)+'</span><span>origem: '+esc(j.ref||'direto')+'</span><span>'+dur(j.dur)+' na página · rolou '+j.scroll+'%</span><span>'+(j.returning?'já tinha vindo':'primeira vez')+'</span></div><div class="st">'+steps+'</div></div>'}).join(''):'<div class="mute small">Sem visitas ainda.</div>')+'</div>'};
+V.tec=function(d){var P=d.perf.overall,g=function(k){return P.filter(function(r){return r.k===k})[0]};var l=g('lcp'),ld=g('load');
+ var ms=function(v){return v>=1000?(v/1000).toFixed(1)+' s':Math.round(v)+' ms'};
+ var dev=d.perf.devices.filter(function(r){return r.k==='lcp'}).map(function(r){return '<tr><td>'+esc(r.d)+'</td><td class="r">'+ms(r.avg)+'</td><td class="r">'+n0(r.c)+'</td></tr>'}).join('');
+ return '<div class="grid k4">'+kpi(l?ms(l.avg):'—','Velocidade para mostrar a imagem principal (LCP)',l?'<div class="d '+(l.avg<=2500?'up':'dn')+'">'+pct(l.good,l.c)+'% das visitas abaixo de 2,5 s (bom)</div>':'')+
+ kpi(ld?ms(ld.avg):'—','Carregamento completo da página',ld?'<div class="d">'+pct(ld.good,ld.c)+'% abaixo de 3 s</div>':'')+
+ kpi(n0(d.errors.reduce(function(a,r){return a+r.c},0)),'Erros de JavaScript no período','<div class="d">'+n0(d.errors.length)+' tipos diferentes</div>')+'</div><div style="height:16px"></div><div class="grid c2">'+
+ card('Velocidade por aparelho (LCP médio)',dev?'<table><thead><tr><th>Aparelho</th><th class="r">Média</th><th class="r">Medições</th></tr></thead><tbody>'+dev+'</tbody></table>':'<div class="mute small">Sem dados ainda.</div>')+
+ card('Erros no navegador de quem visita',d.errors.length?'<table><thead><tr><th>Erro</th><th class="r">Vezes</th><th class="r">Visitas</th></tr></thead><tbody>'+d.errors.map(function(r){return '<tr><td>'+esc(r.msg)+'<div class="small mute">'+esc(r.file||'')+' · '+ago(r.last)+' atrás</div></td><td class="r">'+n0(r.c)+'</td><td class="r">'+n0(r.s)+'</td></tr>'}).join('')+'</tbody></table>':'<div class="mute small">Nenhum erro registrado. Ótimo.</div>')+'</div>'};
+V.aj=function(d){var off=false;try{off=localStorage.getItem('kt-nt')==='1'}catch(e){}
+ return '<div class="grid c2">'+
+ card('Suas próprias visitas','<p class="small mute">Para as suas visitas não entrarem nos números, este navegador precisa estar marcado como “meu”. Faça isso em cada aparelho que você usa (computador, celular).</p><p><b>Este navegador: '+(off?'ignorado ✓':'sendo contado')+'</b></p><button class="ib" id="ign">'+(off?'Voltar a contar este navegador':'Ignorar as minhas visitas neste navegador')+'</button>')+
+ card('Dados guardados','<p class="small mute">Visitas e eventos ficam por até 13 meses e depois são apagados sozinhos. Nada de IP, cookie ou nome é guardado. Você pode baixar tudo em CSV (botões no alto) ou apagar tudo agora.</p><p class="small mute">Registros: '+n0(d.totalEver)+' visitas desde o início.</p><button class="ib" id="wipe" style="color:var(--bad)">Apagar todos os dados…</button><p class="small mute" id="wipeMsg"></p>')+'</div>'};
+V.vivo=function(d){
+ return '<div class="grid k4">'+kpi(n0(d.live),'Na página agora (últimos 5 min)')+kpi(n0(d.active30),'Ativos nos últimos 30 min')+kpi(n0(d.totalEver),'Visitas registradas desde o início')+'</div><div style="height:16px"></div>'+
+ card('Atividade recente',d.feed.length?'<div class="feed">'+d.feed.map(function(e){return '<div><time>'+ago(e.ts)+'</time><span>'+esc(stepLabel({t:e.t,a:e.a,b:e.b}))+'</span><span class="mute small">'+esc(e.country||'?')+' · '+esc(e.device||'')+'</span></div>'}).join('')+'</div>':'<div class="mute small">Nada ainda.</div>')};
+
+function render(){var m=$('#main');if(!DATA){return}
+ var d=DATA;
+ if(!d.totalEver){m.innerHTML='<div class="card"><h3>Ainda sem dados</h3><p>O painel está funcionando. Abra o site em outra aba (sem <code>?notrack</code>), navegue um pouco e volte aqui.</p><p class="small mute">Suas próprias visitas: abra o site uma vez com <code>?notrack</code> no final do endereço em cada aparelho seu para ele deixar de contar você. Para voltar a contar, use <code>?track</code>.</p></div>';return}
+ m.innerHTML='<p class="small mute" style="margin:0 0 14px">Horário de Brasília · '+fmtT(d.from)+' até agora'+(d.totals.sessions?'':' · nenhuma visita neste período')+'</p>'+V[TAB](d);
+ [].forEach.call(m.querySelectorAll('[data-w]'),function(e){e.style.width=e.dataset.w+'%'});
+ var ig=$('#ign');if(ig)ig.onclick=function(){try{if(localStorage.getItem('kt-nt')==='1')localStorage.removeItem('kt-nt');else localStorage.setItem('kt-nt','1')}catch(e){}render()};
+ var wp=$('#wipe');if(wp)wp.onclick=function(){var t=prompt('Isto apaga TODAS as visitas e eventos e não dá para desfazer. Digite APAGAR para confirmar:');if(t!=='APAGAR')return;fetch('/analytics/reset',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json','X-KT':'1'},body:JSON.stringify({confirm:'APAGAR'})}).then(function(r){$('#wipeMsg').textContent=r.ok?'Dados apagados.':'Não foi possível apagar.';if(r.ok)load()})}}
+function load(){fetch('/analytics/api?range='+R,{credentials:'same-origin',cache:'no-store'}).then(function(r){if(r.status===401){location.reload();return null}return r.json().then(function(j){return {s:r.status,j:j}})}).then(function(x){if(!x)return;
+  if(x.j.error==='no_db'){$('#main').innerHTML='<div class="card"><h3>Banco de dados não conectado</h3><p>Conecte um banco D1 chamado <b>DB</b> ao projeto no Cloudflare e publique de novo. Passo a passo no README.</p></div>';return}
+  if(x.j.error){$('#main').innerHTML='<div class="card"><h3>Erro</h3><p>'+esc(x.j.error)+'</p></div>';return}
+  DATA=x.j;$('#liveN').textContent=n0(DATA.live)+' agora';render()}).catch(function(){$('#main').innerHTML='<div class="empty">Não consegui carregar os dados. Tente atualizar a página.</div>'})}
+load();setInterval(function(){if(document.visibilityState==='visible')load()},30000);
+})();
+</script>
+</body>
+</html>

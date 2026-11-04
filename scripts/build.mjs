@@ -120,7 +120,8 @@ const stylesLine = site.styles.map(esc).join(' · ');
 
 const ld = {
   preview: PREV,
-  items: all.map((it) => ({ t: it.title || '', d: it.description || '', s: it.software || '', dt: it.dt, imgs: it.imgs.map((x) => ({ ...x.full, alt: altOf(it) })) })),
+  analytics: site.analytics !== false,
+  items: all.map((it) => ({ t: it.title || '', c: it.category || (it.recent ? 'recent' : ''), d: it.description || '', s: it.software || '', dt: it.dt, imgs: it.imgs.map((x) => ({ ...x.full, alt: altOf(it) })) })),
   expUpdated: cache.updated || 0,
 };
 const ogImg = origin && all[0] ? `${origin}/${all[0].imgs[0].full.src}` : '';
