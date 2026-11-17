@@ -149,7 +149,7 @@ const html = `<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(site.title)}</title>
 <meta name="description" content="${esc(site.description)}">
-<meta name="theme-color" content="#050507">
+<meta name="theme-color" content="#050506">
 <meta name="color-scheme" content="dark light">
 <script>try{var t=localStorage.getItem('kt-theme')}catch(e){}if(t!=='light'&&t!=='dark')t='dark';document.documentElement.dataset.theme=t;document.documentElement.classList.add('js')</script>
 <link rel="preload" href="sg.woff2" as="font" type="font/woff2" crossorigin>
@@ -164,7 +164,7 @@ ${ogImg ? `<meta property="og:image" content="${ogImg}"><meta name="twitter:card
 </head>
 <body>
 <a class="skip" href="#work">Skip to work</a>
-<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><div class="prog" aria-hidden="true"></div>
+<div class="aurora" aria-hidden="true"></div><div class="prog" aria-hidden="true"></div>
 <header class="hdr"><div class="wrap">
 <a class="logo" href="#home" aria-label="kaiotu, home">${esc(site.name)}</a>
 <div class="r">
@@ -197,10 +197,9 @@ ${avail("top")}
 <p class="styles">${stylesLine}</p>
 <div class="actions"><a class="btn" href="#work">Explore My Work</a><a class="lnk" href="#contributions">Contributions</a></div>
 </div>
-<div class="portrait">${photo}<i class="hb tl"></i><i class="hb tr"></i><i class="hb bl"></i><i class="hb br"></i><i class="scan"></i></div>
+<div class="portrait">${photo}</div>
 </div></section>
 
-<div class="marq" aria-hidden="true"><div class="mt">${mq}${mq}</div></div>
 <section class="statsec"><div class="wrap"><ul class="stats">${statsHtml}</ul></div></section>
 
 <section id="work" class="alt"><div class="wrap">
