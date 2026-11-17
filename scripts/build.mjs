@@ -121,9 +121,10 @@ const avail = (w) => av.text ? `<p class="avail ${av.open === false ? "off" : "o
 const vis = cache.items.filter((e) => e.resolved).reduce((a, e) => a + (e.visits || 0), 0);
 const visB = vis >= 1e9 ? [Math.floor(vis / 1e8) / 10, 'B+'] : [Math.floor(vis / 1e5) / 10, 'M+'];
 const styleList = site.styles.filter((x) => !/^and /i.test(x));
-const stats = [[contrib.experiences.length, '', 'Roblox experiences'], [visB[0], visB[1], 'Total visits across them'], [gallery.length, '', 'Pieces in the portfolio'], [styleList.length, '', 'Art styles']];
+const stats = [[contrib.experiences.length, '', 'Experiences'], [visB[0], visB[1], 'Total visits'], [gallery.length, '', 'Pieces'], [styleList.length, '', 'Styles']];
 const statsHtml = stats.map(([n, u, l]) => `<li><b class="num" data-n="${n}" data-u="${u}">${n}${u}</b><span>${esc(l)}</span></li>`).join('');
 const mq = [...styleList, ...site.skills.map((x) => (typeof x === 'string' ? x : x.title))].map((x) => `<span>${esc(x)}</span>`).join('');
+const wall = gallery.slice(0, 12).map((it) => { const m = manifest[it.imgs[0].rel]; return m ? `<img src="img/${m.base}-${Math.min(...m.widths)}.webp" alt="" width="480" height="300" loading="lazy" decoding="async">` : ''; }).join('');
 const stylesLine = site.styles.map(esc).join(' · ');
 
 const ld = {
@@ -152,7 +153,7 @@ const html = `<!doctype html>
 <meta name="theme-color" content="#050506">
 <meta name="color-scheme" content="dark light">
 <script>try{var t=localStorage.getItem('kt-theme')}catch(e){}if(t!=='light'&&t!=='dark')t='dark';document.documentElement.dataset.theme=t;document.documentElement.classList.add('js')</script>
-<link rel="preload" href="sg.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="inter.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 ${origin ? `<link rel="canonical" href="${origin}/">` : '<!-- canonical: set "url" in content/site.json once the domain is known -->'}
 <meta property="og:type" content="website">
@@ -167,9 +168,10 @@ ${ogImg ? `<meta property="og:image" content="${ogImg}"><meta name="twitter:card
 <div class="aurora" aria-hidden="true"></div><div class="prog" aria-hidden="true"></div>
 <header class="hdr"><div class="wrap">
 <a class="logo" href="#home" aria-label="kaiotu, home">${esc(site.name)}</a>
+<nav class="hn" aria-label="Sections"><a href="#work">Work</a><a href="#recent">Recent</a><a href="#contributions">Contributions</a><a href="#about">About</a></nav>
 <div class="r">
 <button type="button" class="ibtn" id="theme" aria-label="Switch theme"><span class="sun">${ico('<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>')}</span><span class="moon">${ico('<path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/>')}</span></button>
-<button type="button" class="ibtn" id="contact-btn" aria-label="Contact" aria-expanded="false" aria-controls="cpanel">${ico('<rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/>')}</button>
+<button type="button" class="ibtn" id="contact-btn" aria-label="Contact" aria-expanded="false" aria-controls="cpanel">${ico('<rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 7l9 6 9-6"/>')}<span class="ct">Let\u2019s connect <i>\u2197</i></span></button>
 <button type="button" class="ibtn burger" id="burger" aria-label="Open menu" aria-expanded="false" aria-controls="menu"><span><i></i><i></i></span></button>
 </div>
 </div></header>
@@ -188,38 +190,38 @@ ${ogImg ? `<meta property="og:image" content="${ogImg}"><meta name="twitter:card
 </aside>
 
 <main>
-<section id="home" class="hero"><div class="wrap hero-grid">
+<section id="home" class="hero"><div class="wall" aria-hidden="true">${wall}</div><div class="wrap hero-grid">
 <div class="hero-t">
 ${avail("top")}
 <h1>${esc(site.name)}</h1>
 <p class="lead">${esc(site.tagline)}</p>
 <p class="intro">${esc(site.intro)}</p>
 <p class="styles">${stylesLine}</p>
-<div class="actions"><a class="btn" href="#work">Explore My Work</a><a class="lnk" href="#contributions">Contributions</a></div>
+<div class="actions"><a class="btn" href="#work">Explore My Work <i>\u2197</i></a><a class="btn ghost" href="#contributions">Contributions <i>\u2193</i></a></div>
+<ul class="stats">${statsHtml}</ul>
 </div>
 <div class="portrait">${photo}</div>
 </div></section>
 
-<section class="statsec"><div class="wrap"><ul class="stats">${statsHtml}</ul></div></section>
 
 <section id="work" class="alt"><div class="wrap">
-<div class="sec-head"><span class="eyebrow">01 — Work</span><h2>Work. <span class="g">Selected pieces across every style.</span></h2></div>
+<div class="sec-head"><span class="eyebrow">Selected work</span><h2>Work</h2><p class="sub2">Selected pieces across every style.</p></div>
 <div class="tabs" role="tablist" aria-label="Categories">${tabsHtml}</div>
 ${catHtml}
 </div></section>
 
 <section id="recent" class="recent"><div class="wrap">
-<div class="sec-head"><h2><span class="eyebrow">New</span>Recent Work</h2><div class="rtools" id="rtools" hidden><button type="button" class="rarrow" id="rprev" aria-label="Previous" hidden>${arrow('M15 5l-7 7 7 7')}</button><button type="button" class="rarrow" id="rnext" aria-label="Next" hidden>${arrow('M9 5l7 7-7 7')}</button><button type="button" class="pause" id="rpause" aria-pressed="false" aria-label="Pause automatic scrolling">Pause</button></div></div>
+<div class="sec-head"><h2>Recent Work</h2><div class="rtools" id="rtools" hidden><button type="button" class="rarrow" id="rprev" aria-label="Previous" hidden>${arrow('M15 5l-7 7 7 7')}</button><button type="button" class="rarrow" id="rnext" aria-label="Next" hidden>${arrow('M9 5l7 7-7 7')}</button><button type="button" class="pause" id="rpause" aria-pressed="false" aria-label="Pause automatic scrolling">Pause</button></div></div>
 ${recentHtml}
 </div></section>
 
 <section id="contributions" class="alt"><div class="wrap">
-<div class="sec-head"><span class="eyebrow">02 — Experiences</span><h2>Contributions. <span class="g">Roblox experiences I\u2019ve contributed to.</span></h2></div>
+<div class="sec-head"><span class="eyebrow">Experiences</span><h2>Contributions</h2><p class="sub2">Roblox experiences I\u2019ve contributed to.</p></div>
 <ul class="xgrid">${xHtml}</ul>
 </div></section>
 
 <section id="about"><div class="wrap">
-<div class="sec-head"><span class="eyebrow">03 — About</span><h2>About Me</h2></div>
+<div class="sec-head"><span class="eyebrow">About</span><h2>About Me</h2></div>
 <div class="about">
 <div class="t">${site.about.map((p) => `<p>${esc(p)}</p>`).join('')}</div>
 <div>
@@ -233,8 +235,8 @@ ${recentHtml}
 
 <footer id="contact" class="alt"><div class="wrap">
 ${avail("foot")}
-<p class="big">${esc(site.closing)}</p>
-<div class="actions">${dUrl ? `<a class="btn" href="${esc(dUrl)}" target="_blank" rel="noopener"${dAttr}>Let\u2019s connect</a>` : `<button type="button" class="btn copy" data-copy="${esc(dHandle)}" data-done="Copied ${esc(dHandle)}">Let\u2019s connect</button>`}</div>
+<p class="big">${esc(site.closing).replace(/(Let(?:'|&#39;|\u2019)s connect\.?)/, '<span class="bl">$1</span>')}</p>
+<div class="actions">${dUrl ? `<a class="btn" href="${esc(dUrl)}" target="_blank" rel="noopener"${dAttr}>Let\u2019s connect <i>\u2197</i></a>` : `<button type="button" class="btn copy" data-copy="${esc(dHandle)}" data-done="Copied ${esc(dHandle)}">Let\u2019s connect</button>`}</div>
 <ul class="icons" aria-label="Contact links"><li><a href="${esc(c.x.url)}" target="_blank" rel="noopener me" aria-label="X ${esc(c.x.handle)}">${svgX}</a></li><li>${dUrl ? `<a href="${esc(dUrl)}" target="_blank" rel="noopener"${dAttr} aria-label="Discord ${esc(dHandle)}">${svgDc}</a>` : `<button type="button" class="copy" data-copy="${esc(dHandle)}" aria-label="Copy Discord username ${esc(dHandle)}">${svgDc}</button>`}</li><li><a href="mailto:${esc(c.email)}" aria-label="Email ${esc(c.email)}">${svgMail}</a></li></ul>
 <p class="fine">© ${year} ${esc(site.name)}</p>
 </div></footer>
