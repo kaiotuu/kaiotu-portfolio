@@ -143,7 +143,7 @@ const up=e=>{
   if(pan){const moved=Math.hypot(e.clientX-pan.x,e.clientY-pan.y)>6;pan=null;stage.classList.remove('panning');
     if(!moved&&e.type==='pointerup'&&!noTap)zoomTo(1,e.clientX,e.clientY);return}
   if(!sw)return;const dx=e.clientX-sw.x,dy=e.clientY-sw.y,v=dx/(e.timeStamp-sw.t||1)*1e3;sw=null;if(e.type!=='pointerup'||noTap)return;
-  if(Math.abs(dx)<6&&Math.abs(dy)<6){zoomTo(ZOOM,e.clientX,e.clientY);T('zoom',seq[pos].it.t,'tap')}
+  if(Math.abs(dx)<6&&Math.abs(dy)<6){if(S===1&&document.elementFromPoint(e.clientX,e.clientY)===stage){dlg.close();return}zoomTo(ZOOM,e.clientX,e.clientY);T('zoom',seq[pos].it.t,'tap')}
   else if(seq.length>1&&Math.abs(dx)>Math.abs(dy)*1.5&&Math.abs(dx+v*.12)>60)go(dx<0?1:-1)};
 stage.addEventListener('pointerup',up);stage.addEventListener('pointercancel',up);
 vimg.addEventListener('load',paint1);
