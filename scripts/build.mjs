@@ -121,7 +121,7 @@ const avail = (w) => av.text ? `<p class="avail ${av.open === false ? "off" : "o
 const vis = cache.items.filter((e) => e.resolved).reduce((a, e) => a + (e.visits || 0), 0);
 const visB = vis >= 1e9 ? [Math.floor(vis / 1e8) / 10, 'B+'] : [Math.floor(vis / 1e5) / 10, 'M+'];
 const styleList = site.styles.filter((x) => !/^and /i.test(x));
-const stats = [[contrib.experiences.length, '', 'Experiences'], [visB[0], visB[1], 'Total visits'], [gallery.length, '', 'Pieces'], [styleList.length, '', 'Styles']];
+const stats = [[10, '+', 'Experiences'], [visB[0], visB[1], 'Total visits'], [gallery.length, '', 'Pieces'], [5, '+', 'Styles']];
 const statsHtml = stats.map(([n, u, l]) => `<li><b class="num" data-n="${n}" data-u="${u}">${n}${u}</b><span>${esc(l)}</span></li>`).join('');
 const mq = [...styleList, ...site.skills.map((x) => (typeof x === 'string' ? x : x.title))].map((x) => `<span>${esc(x)}</span>`).join('');
 const wall = gallery.slice(0, 12).map((it) => { const m = manifest[it.imgs[0].rel]; return m ? `<img src="img/${m.base}-${Math.min(...m.widths)}.webp" alt="" width="480" height="300" loading="lazy" decoding="async">` : ''; }).join('');

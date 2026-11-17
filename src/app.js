@@ -22,6 +22,9 @@ tb.onclick=()=>{const t=root.dataset.theme==='dark'?'light':'dark';applyTheme(t)
     els.forEach(e=>io.observe(e));
     setTimeout(()=>els.forEach(e=>e.classList.add('in')),4000);
   }else els.forEach(e=>e.classList.add('in'));
+  const hd=$('.hdr');addEventListener('scroll',()=>hd.classList.toggle('sc',scrollY>8),{passive:true});
+  {const links=$$('.hn a'),secs=links.map(a=>$(a.getAttribute('href'))).filter(Boolean);
+   if('IntersectionObserver'in window&&secs.length){const so=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting)links.forEach(a=>a.classList.toggle('on',a.getAttribute('href')==='#'+x.target.id))}),{rootMargin:'-45% 0px -50% 0px'});secs.forEach(e=>so.observe(e))}}
   const bar=$('.prog');let tk=0;
   const onS=()=>{tk=0;const h=document.documentElement.scrollHeight-innerHeight;bar.style.transform='scaleX('+(h>0?Math.min(1,scrollY/h):0)+')'};
   addEventListener('scroll',()=>{if(!tk)tk=requestAnimationFrame(onS)},{passive:true});onS();
