@@ -5,10 +5,33 @@ let T=()=>{}; // analytics hook (replaced at the bottom when analytics is on)
 
 /* theme: initial value is set by an inline <head> script (no flash) */
 const tb=$('#theme'),tc=$('meta[name=theme-color]');
-const applyTheme=t=>{root.dataset.theme=t;tb.setAttribute('aria-label',t==='dark'?'Switch to light theme':'Switch to dark theme');tc.content=t==='dark'?'#000000':'#ffffff'};
+const applyTheme=t=>{root.dataset.theme=t;tb.setAttribute('aria-label',t==='dark'?'Switch to light theme':'Switch to dark theme');tc.content=t==='dark'?'#050507':'#f4f4fb'};
 applyTheme(root.dataset.theme||'dark');
 tb.onclick=()=>{const t=root.dataset.theme==='dark'?'light':'dark';applyTheme(t);try{localStorage.setItem('kt-theme',t)}catch{}};
-matchMedia('(prefers-color-scheme:light)').addEventListener('change',e=>{let s=null;try{s=localStorage.getItem('kt-theme')}catch{}if(!s)applyTheme(e.matches?'light':'dark')});
+
+/* futuristic skin: scroll reveal, count-up, cursor glow, hero tilt, progress bar (all skipped for reduced motion) */
+{
+  const calm=matchMedia('(prefers-reduced-motion:reduce)').matches;
+  const rvSel='.hero-t>*,.portrait,.marq,.stats li,.sec-head,.xgrid>li,.about>*,.ev,footer .wrap>*';
+  const els=$$(rvSel);
+  els.forEach((e,i)=>{e.classList.add('rv');e.style.setProperty('--d',(i%6)*70+'ms')});
+  const count=e=>{const n=parseFloat(e.dataset.n),u=e.dataset.u||'',dec=String(e.dataset.n).includes('.')?1:0;if(calm){return}
+    const t0=performance.now(),D=1400;const f=t=>{const k=Math.min(1,(t-t0)/D),v=n*(1-Math.pow(1-k,4));e.textContent=v.toFixed(dec)+u;if(k<1)requestAnimationFrame(f)};requestAnimationFrame(f)};
+  if('IntersectionObserver'in window&&!calm){
+    const io=new IntersectionObserver(es=>es.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');$$('.num',x.target).forEach(count);io.unobserve(x.target)}}),{threshold:.12,rootMargin:'0px 0px -6% 0px'});
+    els.forEach(e=>io.observe(e));
+    setTimeout(()=>els.forEach(e=>e.classList.add('in')),4000);
+  }else els.forEach(e=>e.classList.add('in'));
+  const bar=$('.prog');let tk=0;
+  const onS=()=>{tk=0;const h=document.documentElement.scrollHeight-innerHeight;bar.style.transform='scaleX('+(h>0?Math.min(1,scrollY/h):0)+')'};
+  addEventListener('scroll',()=>{if(!tk)tk=requestAnimationFrame(onS)},{passive:true});onS();
+  if(!calm&&matchMedia('(hover:hover) and (pointer:fine)').matches){
+    document.addEventListener('pointermove',e=>{const c=e.target.closest&&e.target.closest('.thumb,.x a.card,.stats li,.ev ul');if(c){const r=c.getBoundingClientRect();c.style.setProperty('--mx',(e.clientX-r.left)+'px');c.style.setProperty('--my',(e.clientY-r.top)+'px')}},{passive:true});
+    const hero=$('.hero'),po=$('.portrait');
+    if(hero&&po)hero.addEventListener('pointermove',e=>{const r=hero.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;po.style.setProperty('--rx',(-y*5).toFixed(2)+'deg');po.style.setProperty('--ry',(x*7).toFixed(2)+'deg')},{passive:true});
+    if(hero&&po)hero.addEventListener('pointerleave',()=>{po.style.setProperty('--rx','0deg');po.style.setProperty('--ry','0deg')});
+  }
+}
 
 /* menu */
 const menu=$('#menu'),scrim=$('#scrim'),burger=$('#burger');

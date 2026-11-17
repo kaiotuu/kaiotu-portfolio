@@ -118,6 +118,12 @@ const photo = site.photo && manifest[site.photo]
 const eventsHtml = site.events.map((e) => `<li><h4>${esc(e.name)}</h4><span class="y">${esc(e.year)}</span><span class="s">${esc(e.status)}</span></li>`).join('');
 const av = site.availability || {};
 const avail = (w) => av.text ? `<p class="avail ${av.open === false ? "off" : "on"} ${w}"><span class="adot" aria-hidden="true"></span>${esc(av.open === false ? (av.closedText || av.text) : av.text)}</p>` : "";
+const vis = cache.items.filter((e) => e.resolved).reduce((a, e) => a + (e.visits || 0), 0);
+const visB = vis >= 1e9 ? [Math.floor(vis / 1e8) / 10, 'B+'] : [Math.floor(vis / 1e5) / 10, 'M+'];
+const styleList = site.styles.filter((x) => !/^and /i.test(x));
+const stats = [[contrib.experiences.length, '', 'Roblox experiences'], [visB[0], visB[1], 'Total visits across them'], [gallery.length, '', 'Pieces in the portfolio'], [styleList.length, '', 'Art styles']];
+const statsHtml = stats.map(([n, u, l]) => `<li><b class="num" data-n="${n}" data-u="${u}">${n}${u}</b><span>${esc(l)}</span></li>`).join('');
+const mq = [...styleList, ...site.skills.map((x) => (typeof x === 'string' ? x : x.title))].map((x) => `<span>${esc(x)}</span>`).join('');
 const stylesLine = site.styles.map(esc).join(' · ');
 
 const ld = {
@@ -143,9 +149,10 @@ const html = `<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(site.title)}</title>
 <meta name="description" content="${esc(site.description)}">
-<meta name="theme-color" content="#ffffff">
+<meta name="theme-color" content="#050507">
 <meta name="color-scheme" content="dark light">
-<script>try{var t=localStorage.getItem('kt-theme')}catch(e){}if(t!=='light'&&t!=='dark')t=matchMedia('(prefers-color-scheme:light)').matches?'light':'dark';document.documentElement.dataset.theme=t</script>
+<script>try{var t=localStorage.getItem('kt-theme')}catch(e){}if(t!=='light'&&t!=='dark')t='dark';document.documentElement.dataset.theme=t;document.documentElement.classList.add('js')</script>
+<link rel="preload" href="sg.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 ${origin ? `<link rel="canonical" href="${origin}/">` : '<!-- canonical: set "url" in content/site.json once the domain is known -->'}
 <meta property="og:type" content="website">
@@ -157,6 +164,7 @@ ${ogImg ? `<meta property="og:image" content="${ogImg}"><meta name="twitter:card
 </head>
 <body>
 <a class="skip" href="#work">Skip to work</a>
+<div class="aurora" aria-hidden="true"><i></i><i></i><i></i></div><div class="prog" aria-hidden="true"></div>
 <header class="hdr"><div class="wrap">
 <a class="logo" href="#home" aria-label="kaiotu, home">${esc(site.name)}</a>
 <div class="r">
@@ -182,34 +190,37 @@ ${ogImg ? `<meta property="og:image" content="${ogImg}"><meta name="twitter:card
 <main>
 <section id="home" class="hero"><div class="wrap hero-grid">
 <div class="hero-t">
-${avail("hero")}
+${avail("top")}
 <h1>${esc(site.name)}</h1>
 <p class="lead">${esc(site.tagline)}</p>
 <p class="intro">${esc(site.intro)}</p>
 <p class="styles">${stylesLine}</p>
 <div class="actions"><a class="btn" href="#work">Explore My Work</a><a class="lnk" href="#contributions">Contributions</a></div>
 </div>
-<div class="portrait">${photo}</div>
+<div class="portrait">${photo}<i class="hb tl"></i><i class="hb tr"></i><i class="hb bl"></i><i class="hb br"></i><i class="scan"></i></div>
 </div></section>
 
+<div class="marq" aria-hidden="true"><div class="mt">${mq}${mq}</div></div>
+<section class="statsec"><div class="wrap"><ul class="stats">${statsHtml}</ul></div></section>
+
 <section id="work" class="alt"><div class="wrap">
-<div class="sec-head"><h2>Work. <span class="g">Selected pieces across every style.</span></h2></div>
+<div class="sec-head"><span class="eyebrow">01 — Work</span><h2>Work. <span class="g">Selected pieces across every style.</span></h2></div>
 <div class="tabs" role="tablist" aria-label="Categories">${tabsHtml}</div>
 ${catHtml}
 </div></section>
 
 <section id="recent" class="recent"><div class="wrap">
-<div class="sec-head"><h2>Recent Work</h2><div class="rtools" id="rtools" hidden><button type="button" class="rarrow" id="rprev" aria-label="Previous" hidden>${arrow('M15 5l-7 7 7 7')}</button><button type="button" class="rarrow" id="rnext" aria-label="Next" hidden>${arrow('M9 5l7 7-7 7')}</button><button type="button" class="pause" id="rpause" aria-pressed="false" aria-label="Pause automatic scrolling">Pause</button></div></div>
+<div class="sec-head"><h2><span class="eyebrow">New</span>Recent Work</h2><div class="rtools" id="rtools" hidden><button type="button" class="rarrow" id="rprev" aria-label="Previous" hidden>${arrow('M15 5l-7 7 7 7')}</button><button type="button" class="rarrow" id="rnext" aria-label="Next" hidden>${arrow('M9 5l7 7-7 7')}</button><button type="button" class="pause" id="rpause" aria-pressed="false" aria-label="Pause automatic scrolling">Pause</button></div></div>
 ${recentHtml}
 </div></section>
 
 <section id="contributions" class="alt"><div class="wrap">
-<div class="sec-head"><h2>Contributions. <span class="g">Roblox experiences I\u2019ve contributed to.</span></h2></div>
+<div class="sec-head"><span class="eyebrow">02 — Experiences</span><h2>Contributions. <span class="g">Roblox experiences I\u2019ve contributed to.</span></h2></div>
 <ul class="xgrid">${xHtml}</ul>
 </div></section>
 
 <section id="about"><div class="wrap">
-<div class="sec-head"><h2>About Me</h2></div>
+<div class="sec-head"><span class="eyebrow">03 — About</span><h2>About Me</h2></div>
 <div class="about">
 <div class="t">${site.about.map((p) => `<p>${esc(p)}</p>`).join('')}</div>
 <div>
