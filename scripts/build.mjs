@@ -124,14 +124,12 @@ const styleList = site.styles.filter((x) => !/^and /i.test(x));
 const stats = [[10, '+', 'Experiences'], [visB[0], visB[1], 'Total visits'], [gallery.length, '', 'Pieces'], [5, '+', 'Styles']];
 const statsHtml = stats.map(([n, u, l]) => `<li><b class="num" data-n="${n}" data-u="${u}">${n}${u}</b><span>${esc(l)}</span></li>`).join('');
 const mq = [...styleList, ...site.skills.map((x) => (typeof x === 'string' ? x : x.title))].map((x) => `<span>${esc(x)}</span>`).join('');
-const wall = gallery.slice(0, 12).map((it) => { const m = manifest[it.imgs[0].rel]; return m ? `<img src="img/${m.base}-${Math.min(...m.widths)}.webp" alt="" width="480" height="300" loading="lazy" decoding="async">` : ''; }).join('');
+const wallImgs = gallery.slice(0, 18).map((it) => { const m = manifest[it.imgs[0].rel]; return m ? `<img src="img/${m.base}-${Math.min(...m.widths)}.webp" alt="" width="480" height="300" decoding="async">` : ''; }).filter(Boolean);
+const wallRows = [0, 1, 2].map((r) => wallImgs.filter((_, i) => i % 3 === r)).filter((x) => x.length).map((row, r) => `<div class="wr ${r % 2 ? 'rev' : ''}"><div class="wt">${row.join('')}${row.join('')}</div></div>`);
+const wall = wallRows.join('');
 const tg = esc(site.tagline), amp = tg.indexOf('&amp;');
 const leadHtml = amp > 0 ? `${tg.slice(0, amp + 5)}<br><span class="bl">${tg.slice(amp + 5).trim()}</span>` : tg;
-const featIt = recent[0] || gallery[0];
-const featI = featIt ? (idxR.has(featIt) ? idxR.get(featIt) : idxG.get(featIt)) : null;
-const hero = site.photo && manifest[site.photo]
-  ? `<div class="portrait">${photo}</div>`
-  : featIt ? `<div class="featwrap"><button type="button" class="thumb feat" data-i="${featI}" aria-label="View ${esc(featIt.title || 'latest work')}">${picture(featIt.imgs[0].rel, { sizes: '(min-width:900px) 40vw, 90vw', alt: altOf(featIt), eager: true })}<span class="fb">${featIt.recent ? 'Latest work' : 'Featured'}</span><span class="ft">${esc(featIt.title || '')}<i>\u2197</i></span></button></div>` : '';
+const hero = site.photo && manifest[site.photo] ? `<div class="portrait">${photo}</div>` : '';
 const stylesLine = site.styles.map(esc).join(' · ');
 
 const ld = {
