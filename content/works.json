@@ -1,12 +1,12 @@
 {
   "categories": [
     {
-      "id": "clothes",
-      "name": "3D Clothes"
-    },
-    {
       "id": "weapons",
       "name": "Firearms & Melee Weapons"
+    },
+    {
+      "id": "clothes",
+      "name": "3D Clothes"
     },
     {
       "id": "vehicles",
